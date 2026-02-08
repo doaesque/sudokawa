@@ -7,18 +7,21 @@ const quotes = {
 }
 
 const ChiikawaCharacters = () => {
+  // State untuk bubble chat yang aktif
   const [activeBubble, setActiveBubble] = useState(null)
 
+  // Handler klik karakter: tampilkan bubble 2 detik
   const handleCharClick = (id) => {
     setActiveBubble(id)
     setTimeout(() => setActiveBubble(null), 2000)
   }
 
+  // Helper ambil quote acak
   const getQuote = (char) => quotes[char][Math.floor(Math.random() * quotes[char].length)]
 
   return (
     <div className="footer-mascot-container">
-      {/* Character 1: Usagi */}
+      {/* Karakter 1: Usagi */}
       <div 
         className="char-wrapper" 
         onClick={() => handleCharClick('usagi')}
@@ -32,7 +35,7 @@ const ChiikawaCharacters = () => {
         )}
       </div>
 
-      {/* Character 2: Momonga */}
+      {/* Karakter 2: Momonga */}
       <div
         className="char-wrapper" 
         onClick={() => handleCharClick('momonga')}

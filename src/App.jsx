@@ -19,7 +19,7 @@ function App() {
 
   return (
     <div className="sudoku-container">
-      {/* Oper fungsi showTeam ke Header */}
+      {/* Header dengan tombol Meet Team */}
       <Header onShowTeam={() => setShowTeam(true)} />
 
       <div className="main-layout">
@@ -52,10 +52,7 @@ function App() {
 
         {/* KANAN: Notes + Mascot */}
         <div className="info-column-wrapper">
-          {/* Tombol Meet Team SUDAH PINDAH KE HEADER */}
-          
           <InfoPanel message={panelMsg} />
-          
           <ChiikawaCharacters />
         </div>
       </div>

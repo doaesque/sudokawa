@@ -3,18 +3,19 @@ import '../App.css'
 import TeamModal from './TeamModal'
 
 const Header = () => {
+  // State modal team
   const [showTeamModal, setShowTeamModal] = useState(false)
 
   return (
     <div className="header">
-      {/* Karakter Kiri: Chiikawa.svg (Statis) */}
+      {/* Karakter Kiri (Statis) */}
       <div className="char-wrapper pos-left">
         <img src="/Chiikawa.svg" className="character-img" alt="Chiikawa" />
       </div>
 
       <h1 className="title">SUDOKAWA</h1>
       
-      {/* Tombol Team: chiikawaa.svg (Bisa Diklik) */}
+      {/* Tombol Team (Klik) */}
       <button 
         className="team-icon-btn" 
         onClick={() => setShowTeamModal(true)}
@@ -28,7 +29,7 @@ const Header = () => {
         />
       </button>
 
-      {/* Karakter Kanan: Hachikaware.svg (Statis) */}
+      {/* Karakter Kanan (Statis) */}
       <div className="char-wrapper pos-right">
         <img src="/Hachikaware.svg" className="character-img" alt="Hachikaware" />
       </div>

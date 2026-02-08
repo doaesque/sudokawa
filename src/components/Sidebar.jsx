@@ -6,12 +6,14 @@ const Sidebar = ({ onSolve, onSolveCell, onReset, onHint, isHintActive, onCheck,
     <div className="sidebar-card">
       <div>
         <div className="sidebar-content">
+          {/* Grup 1: Kontrol Utama */}
           <div className="btn-group">
             <button className="btn-blob" onClick={onSolve} disabled={isSolving} data-tooltip="Mulai Auto-Solve">SOLVE</button>
             <button className="btn-blob" onClick={onSolveCell} disabled={isSolving} data-tooltip="Isi kotak terpilih">SOLVE CELL</button>
             <button className="btn-blob" onClick={onReset} disabled={isSolving} data-tooltip="Hapus semua jawaban">RESET</button>
           </div>
 
+          {/* Grup 2: Bantuan & Cek */}
           <div className="btn-group">
             <button
               className="btn-blob"
@@ -25,6 +27,7 @@ const Sidebar = ({ onSolve, onSolveCell, onReset, onHint, isHintActive, onCheck,
             <button className="btn-blob" onClick={onCheck} disabled={isSolving} data-tooltip="Cek validitas">CHECK</button>
           </div>
 
+          {/* Grup 3: Level */}
           <div className="btn-group">
             <button className="btn-blob" onClick={() => onLevel('easy')} disabled={isSolving} data-tooltip="Soal Mudah">EASY</button>
             <button className="btn-blob" onClick={() => onLevel('medium')} disabled={isSolving} data-tooltip="Soal Sedang">MEDIUM</button>

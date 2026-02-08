@@ -2,6 +2,7 @@ import React from 'react'
 import '../App.css'
 
 const TeamModal = ({ onClose }) => {
+  // Data anggota tim
   const teamMembers = [
     { name: "Salmah", nim: "10124175", icon: "🦁" },
     { name: "Haliza", nim: "10124178", icon: "🦄" },

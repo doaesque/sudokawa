@@ -5,10 +5,13 @@ const InfoPanel = ({ message }) => {
   return (
     <div className="info-card">
       <div className="features-title info-title">Notes</div>
+      
+      {/* Area Pesan/Statistik */}
       <div className="info-content">
         <p>{message}</p>
       </div>
       
+      {/* Legenda Warna */}
       <div className="legend-box">
         <div className="legend-item">
           <span className="legend-dot" style={{background:'#444'}}></span> Fixed (Soal)
