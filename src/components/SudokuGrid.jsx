@@ -19,11 +19,10 @@ const SudokuGrid = ({ board, cellStatus, onInputChange, onCellFocus, isSolving, 
           </div>
 
           <div className="grid-board">
-            {/* Overlay SUDAH DIHAPUS DARI SINI */}
-
             {board.map((row, r) =>
               row.map((cell, c) => (
                 <div key={`${r}-${c}`} className="cell-wrapper">
+                  {/* HINT (PENCIL MARKS) LAYER */}
                   {cell === 0 && candidates && candidates[r][c] && candidates[r][c].length > 0 && (
                     <div className="candidate-grid">
                       {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(num => (
@@ -33,6 +32,8 @@ const SudokuGrid = ({ board, cellStatus, onInputChange, onCellFocus, isSolving, 
                       ))}
                     </div>
                   )}
+                  
+                  {/* INPUT LAYER */}
                   <input
                     className={`cell ${cellStatus[r][c]}`}
                     value={cell === 0 ? '' : cell}

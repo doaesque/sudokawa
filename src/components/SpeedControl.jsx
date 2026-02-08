@@ -2,43 +2,30 @@ import React from 'react'
 import '../App.css'
 
 const SpeedControl = ({ speed, setSpeed, onSkip, isSolving }) => {
-  const SLOWEST_DELAY = 800
-  const FASTEST_DELAY = 10
-
-  const handleSliderChange = (e) => {
-    const sliderValue = parseInt(e.target.value)
-    const percentage = sliderValue / 100
-    const newDelay = SLOWEST_DELAY - (percentage * (SLOWEST_DELAY - FASTEST_DELAY))
-    setSpeed(newDelay)
-  }
-
-  const getSliderValue = () => {
-    if (speed === 0) return 100
-    return ((SLOWEST_DELAY - speed) / (SLOWEST_DELAY - FASTEST_DELAY)) * 100
-  }
-
   return (
     <div className="playlist-container">
-      {/* Gunakan data-tooltip untuk gaya yang sama */}
-      <div 
-        className="speed-control tooltip-bottom"
-        data-tooltip="Atur Kecepatan Animasi" 
-      >
-        <span className="speed-label">🐢</span>
-        <input
-          type="range" min="0" max="100" className="speed-slider"
-          value={getSliderValue()} onChange={handleSliderChange}
+      {/* Tambahkan class 'disabled-state' jika isSolving false */}
+      <div className={`speed-control ${!isSolving ? 'disabled-state' : ''}`}>
+        <span className="speed-label">Speed</span>
+        <input 
+          type="range" 
+          min="1" 
+          max="100" 
+          value={speed} 
+          onChange={(e) => setSpeed(Number(e.target.value))}
+          className="speed-slider"
+          disabled={!isSolving} 
+          /* PASTIKAN TIDAK ADA TITLE DI SINI */
         />
-        <span className="speed-label">🐇</span>
       </div>
-      
-      <button
-        className="btn-skip tooltip-bottom" 
-        onClick={onSkip}
-        disabled={!isSolving || speed === 0}
-        data-tooltip="Selesaikan Instan (Skip)"
+
+      <button 
+        className={`btn-skip ${!isSolving ? 'disabled-state' : ''}`}
+        onClick={onSkip} 
+        disabled={!isSolving}
+        /* PASTIKAN TIDAK ADA TITLE DI SINI */
       >
-        ⏩
+        ⏭
       </button>
     </div>
   )
