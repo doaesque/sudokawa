@@ -1,0 +1,31 @@
+.playlist-container { 
+  margin-top: 10px; width: 100%; padding-left: 30px; 
+  display: flex; align-items: center; justify-content: space-between; gap: 10px; 
+}
+.speed-control { 
+  display: flex; align-items: center; gap: 8px; flex-grow: 1; 
+  background: rgba(255, 255, 255, 0.2); padding: 6px 12px; border-radius: 20px; position: relative; 
+}
+.speed-label { color: white; font-weight: 700; font-size: 0.9rem; white-space: nowrap; }
+.speed-slider { 
+  -webkit-appearance: none; width: 100%; height: 5px; 
+  border-radius: 5px; background: rgba(255,255,255,0.5); outline: none; 
+  cursor: pointer; position: relative; z-index: 50; 
+}
+.speed-slider::-webkit-slider-thumb { 
+  -webkit-appearance: none; appearance: none; width: 15px; height: 15px; 
+  border-radius: 50%; background: white; cursor: pointer; border: 2px solid var(--panel-dark-pink); 
+}
+.btn-skip { 
+  background: white; border: none; width: 35px; height: 35px; 
+  border-radius: 50%; color: var(--panel-dark-pink); font-size: 1rem; 
+  cursor: pointer; display: flex; align-items: center; justify-content: center; 
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: 0.2s; position: relative; 
+}
+.btn-skip:hover { transform: scale(1.1); background: #fff0f5; }
+
+/* Tooltip Bottom Position (Speed Control) */
+.tooltip-bottom[data-tooltip]:hover::after {
+  left: 50%; top: 100%; bottom: auto;
+  transform: translateX(-50%); margin-top: 10px;
+}
