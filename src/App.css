@@ -75,62 +75,6 @@ body[data-theme='momonga'] {
   --modal-shadow: rgba(206, 147, 216, 0.5);
 }
 
-/* --- Base Element Styling (Theme Aware) --- */
-h1 {
-  font-size: 3em;
-  line-height: 1.1;
-  color: var(--panel-dark-pink); 
-  filter: drop-shadow(2px 2px 0px white);
-  text-align: center;
-}
-
-a {
-  font-weight: 600;
-  color: var(--text-pink);
-  text-decoration: none;
-  transition: color 0.2s ease;
-}
-
-a:hover {
-  color: var(--panel-dark-pink);
-}
-
-button {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  border-radius: 12px;
-  border: 2px solid var(--panel-pink);
-  padding: 0.6em 1.2em;
-  font-size: 1rem;
-  font-weight: 600;
-  font-family: 'Fredoka', sans-serif;
-  background-color: white;
-  color: var(--panel-dark-pink);
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-button:hover:not(:disabled) {
-  background-color: var(--bg-main);
-  border-color: var(--panel-dark-pink);
-  transform: translateY(-3px);
-  box-shadow: 0 4px 12px var(--modal-shadow);
-}
-
-button:active:not(:disabled) {
-  transform: scale(0.95);
-}
-
-button:focus-visible {
-  outline: 3px solid var(--panel-pink);
-}
-
-button:focus,
-input:focus {
-  outline: none;
-}
-
 body {
   background-color: var(--bg-main);
   color: var(--text-pink);
@@ -142,6 +86,11 @@ body {
   height: 100vh;
   overflow: hidden;
   transition: background-color 0.5s ease;
+}
+
+button:focus,
+input:focus {
+  outline: none;
 }
 
 /* Custom Cursor */
