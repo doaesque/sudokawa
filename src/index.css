@@ -1,11 +1,16 @@
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  /* Sudokawa Pastel Palette */
+  --bg-main: #fff5f8;
+  --text-main: #ff8fa3;
+  --primary-pink: #ffb7c5;
+  --hover-pink: #ffd1dc;
+  
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  color: var(--text-main);
+  background-color: var(--bg-main);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -14,55 +19,71 @@
 }
 
 a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
+  font-weight: 600;
+  color: var(--text-main);
+  text-decoration: none;
+  transition: color 0.2s ease;
 }
+
 a:hover {
-  color: #535bf2;
+  color: var(--primary-pink);
 }
 
 body {
   margin: 0;
   display: flex;
   place-items: center;
+  justify-content: center;
   min-width: 320px;
   min-height: 100vh;
+  /* Tambahkan kursor chiikawa jika filenya ada */
+  cursor: url('/chiikawa.png'), auto; 
 }
 
 h1 {
-  font-size: 3.2em;
+  font-size: 3em;
   line-height: 1.1;
+  color: var(--text-main);
+  filter: drop-shadow(2px 2px 0px white);
 }
 
 button {
-  border-radius: 8px;
-  border: 1px solid transparent;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none; /* Standar appearance */
+  
+  border-radius: 12px;
+  border: 2px solid var(--primary-pink);
   padding: 0.6em 1.2em;
   font-size: 1em;
-  font-weight: 500;
+  font-weight: 600;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: white;
+  color: var(--text-main);
   cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-@media (prefers-color-scheme: light) {
+button:hover {
+  background-color: var(--bg-main);
+  border-color: var(--text-main);
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(255, 183, 197, 0.4);
+}
+
+button:active {
+  transform: scale(0.95);
+}
+
+button:focus,
+button:focus-visible {
+  outline: 3px solid var(--hover-pink);
+}
+
+@media (prefers-color-scheme: dark) {
   :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
+    color: var(--text-main);
+    background-color: var(--bg-main);
   }
 }
