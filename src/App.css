@@ -8,7 +8,9 @@
   --text-white: #ffffff;
   --btn-hover: #fff0f5;
   --focus-color: #ff1493;
-  --cell-size: clamp(28px, 9vw, 40px);
+
+  /* Ukuran cell responsif terhadap LEBAR (vw) dan TINGGI (vh) layar */
+  --cell-size: clamp(28px, 6vh, 42px);
 }
 
 body {
@@ -18,7 +20,10 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
+
+  /* Paksa tinggi 100% layar & sembunyikan scroll default */
+  height: 100vh;
+  overflow: hidden;
 }
 
 button:focus,
@@ -26,30 +31,27 @@ input:focus {
   outline: none;
 }
 
-/* ========================= */
-/* CUSTOM CURSOR */
-/* ========================= */
-html,
-body {
+/* Custom Cursor */
+html, body {
   cursor: url('/chiikawa.png'), auto !important;
 }
 
-button,
-.team-icon-btn,
-[role="button"] {
+button, .team-icon-btn, [role="button"] {
   cursor: url('/hachikaware.png'), pointer !important;
 }
 
 /* ========================= */
-/* LAYOUT & HEADER */
+/* LAYOUT UTAMA */
 /* ========================= */
+
 .sudoku-container {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   width: 100%;
   max-width: 1300px;
-  padding-bottom: 30px;
+  height: 100%;
 }
 
 .header {
@@ -58,14 +60,15 @@ button,
   align-items: center;
   width: 90%;
   margin-bottom: 30px;
-  margin-top: 40px;
+  margin-top: 0px;
   position: relative;
   z-index: 500;
+  flex-shrink: 0;
 }
 
 .title {
   color: var(--panel-dark-pink);
-  font-size: 3.5rem;
+  font-size: 2.5rem;
   font-weight: 600;
   margin: 0;
   text-align: center;
@@ -74,15 +77,19 @@ button,
 
 .main-layout {
   display: flex;
-  gap: 30px;
-  align-items: flex-start;
+  flex-direction: row;
+  align-items: stretch;
   justify-content: center;
+  gap: 20px;
   width: 100%;
   position: relative;
   z-index: 10;
+  padding: 0 20px;
+  box-sizing: border-box;
+  flex-shrink: 1;
+  max-height: 85vh;
 }
 
-/* CHARACTER HEADER POSITIONS (STATIS) */
 .char-wrapper {
   position: absolute;
   z-index: 10;
@@ -100,20 +107,18 @@ button,
 }
 
 .pos-left {
-  right: 68%;
-  top: -10px;
-  width: 90px;
+  right: 63%;
+  top: -15px;
+  width: 85px;
 }
 
 .pos-right {
-  left: 68%;
-  top: -15px;
-  width: 90px;
+  left: 63%;
+  top: -20px;
+  width: 85px;
 }
 
-/* ========================= */
-/* FOOTER CHARACTERS (FIXED TO WINDOW) */
-/* ========================= */
+/* Footer Characters */
 .footer-mascot-container {
   display: flex;
   justify-content: center;
@@ -121,38 +126,34 @@ button,
   gap: 10px;
   width: 100%;
   z-index: 50;
-
   position: fixed;
-  bottom: 20px;
-  left: 380px;
-
-  pointer-events: none; 
+  bottom: 50px;
+  left: 330px;
+  pointer-events: none;
 }
 
 .footer-mascot-container .char-wrapper {
   position: relative;
-  width: auto;
-  right: auto;
-  top: auto;
-  left: auto;
-  bottom: 0;
-
   pointer-events: auto;
   cursor: url('/hachikaware.png'), pointer !important;
 }
 
 .footer-mascot-container .character-img {
-  height: 120px;
+  height: 110px;
   width: auto;
   object-fit: contain;
   transition: transform 0.2s ease;
+}
+
+.footer-mascot-container .char-wrapper:first-child .character-img {
+  height: 120px; /* Usagi size */
 }
 
 .footer-mascot-container .character-img:hover {
   transform: scale(1.15);
 }
 
-/* SPEECH BUBBLE */
+/* Speech Bubble */
 .speech-bubble {
   position: absolute;
   background: white;
@@ -165,11 +166,16 @@ button,
   white-space: nowrap;
   z-index: 600;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  animation: popInBubble 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   left: 50%;
   transform: translateX(-50%);
   bottom: 100%;
   margin-bottom: 15px;
+}
+
+@keyframes popInBubble {
+  from { transform: translateX(-50%) scale(0.5); opacity: 0; }
+  to { transform: translateX(-50%) scale(1); opacity: 1; }
 }
 
 .speech-bubble::after {
@@ -186,40 +192,49 @@ button,
 /* ========================= */
 /* PANELS */
 /* ========================= */
+
+/* Sidebar Kiri */
+.sidebar-wrapper {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 150px;
+}
+
 .sidebar-card {
   background-color: var(--panel-pink);
-  padding: 25px 15px;
+  padding: 20px 15px;
   border-radius: 20px;
   display: flex;
   flex-direction: column;
   width: 150px;
   box-shadow: 0 8px 0 rgba(0, 0, 0, 0.05);
   position: relative;
-  height: fit-content !important;
-  align-self: flex-start !important;
   z-index: 100;
+  height: 100% !important;
+  box-sizing: border-box;
+  justify-content: center;
 }
 
 .sidebar-content {
   display: flex;
   flex-direction: column;
-  gap: 30px;
+  gap: 20px;
 }
 
 .btn-group {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 
 .btn-blob {
   background: white;
-  border: none;
-  padding: 12px 5px;
+  border: 2px solid transparent;
+  padding: 10px 5px;
   border-radius: 15px;
   color: var(--text-pink);
   font-family: 'Fredoka', sans-serif;
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.2s;
@@ -227,6 +242,7 @@ button,
   transform: rotate(-1deg);
   width: 100%;
   position: relative;
+  box-sizing: border-box;
 }
 
 .btn-blob:hover {
@@ -242,7 +258,7 @@ button,
   box-shadow: none;
 }
 
-/* TOOLTIP */
+/* Tooltip */
 [data-tooltip]:hover::after {
   content: attr(data-tooltip);
   position: absolute;
@@ -266,7 +282,9 @@ button,
   transform: translateX(-50%);
 }
 
+/* Grid Tengah */
 .grid-card {
+  flex: 0 1 auto;
   background-color: var(--panel-pink);
   border-radius: 20px;
   display: flex;
@@ -274,31 +292,32 @@ button,
   align-items: center;
   justify-content: center;
   box-shadow: 0 10px 25px rgba(255, 158, 181, 0.4);
-  padding: 25px;
-  padding-right: 45px;
-  padding-bottom: 25px;
+  padding: 20px;
+  padding-right: 40px;
+  padding-bottom: 20px;
   position: relative;
   z-index: 50;
+  height: auto;
 }
 
-/* SPEED CONTROL */
+/* Speed Control */
 .playlist-container {
-  margin-top: 15px;
+  margin-top: 10px;
   width: 100%;
-  padding-left: 30px;
+  padding-left: 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 15px;
+  gap: 10px;
 }
 
 .speed-control {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   flex-grow: 1;
   background: rgba(255, 255, 255, 0.2);
-  padding: 8px 15px;
+  padding: 6px 12px;
   border-radius: 20px;
   transition: opacity 0.3s;
 }
@@ -306,14 +325,14 @@ button,
 .speed-label {
   color: white;
   font-weight: 700;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   white-space: nowrap;
 }
 
 .speed-slider {
   -webkit-appearance: none;
   width: 100%;
-  height: 6px;
+  height: 5px;
   border-radius: 5px;
   background: rgba(255, 255, 255, 0.5);
   outline: none;
@@ -325,8 +344,8 @@ button,
 .speed-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 18px;
-  height: 18px;
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
   background: white;
   cursor: pointer;
@@ -336,18 +355,18 @@ button,
 .btn-skip {
   background: white;
   border: none;
-  width: 40px;
-  height: 40px;
+  width: 35px;
+  height: 35px;
   border-radius: 50%;
   color: var(--panel-dark-pink);
-  font-size: 1.2rem;
+  font-size: 1rem;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   transition: 0.2s;
-  padding-top: 5px;
+  padding-top: 4px;
 }
 
 .btn-skip:disabled {
@@ -370,31 +389,33 @@ button,
   cursor: not-allowed !important;
 }
 
-/* INFO PANEL */
+/* Notes Kanan */
 .info-column-wrapper {
+  flex: 0 0 220px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
+  gap: 15px;
+  align-self: flex-start;
 }
 
 .info-card {
   background-color: var(--panel-pink);
-  padding: 25px;
+  padding: 20px;
   border-radius: 20px;
   width: 220px;
   color: white;
   box-shadow: 0 8px 0 rgba(0, 0, 0, 0.05);
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 12px;
   height: auto;
   z-index: 10;
 }
 
 .info-title {
   color: white;
-  font-size: 1.3rem;
+  font-size: 1.1rem;
   font-weight: 600;
   text-align: center;
   margin: 0;
@@ -402,29 +423,30 @@ button,
 }
 
 .info-content p {
-  line-height: 1.6;
-  font-size: 0.95rem;
+  line-height: 1.5;
+  font-size: 0.85rem;
   margin: 0;
   background: rgba(255, 255, 255, 0.2);
-  padding: 12px;
+  padding: 10px;
   border-radius: 15px;
+  white-space: pre-wrap;
+  text-align: left;
 }
 
-/* BOARD STYLES */
+/* Board Styles */
 .board-area {
   position: relative;
   z-index: 10;
 }
 
-/* REVISI OVERLAY: TRANSPARAN TOTAL & TANPA BLUR */
 .grid-overlay {
   position: absolute;
   top: -5px;
   left: -5px;
   right: -5px;
   bottom: -5px;
-  background: transparent; /* TRANSPARAN, tidak ada warna putih */
-  backdrop-filter: none;   /* Hapus blur jika ada */
+  background: transparent;
+  backdrop-filter: none;
   z-index: 999;
   border-radius: 15px;
   cursor: wait;
@@ -447,7 +469,7 @@ button,
   text-align: center;
   color: white;
   font-weight: 700;
-  font-size: 1.1rem;
+  font-size: 1rem;
 }
 
 .grid-body {
@@ -474,7 +496,7 @@ button,
   justify-content: flex-end;
   color: white;
   font-weight: 700;
-  font-size: 1.1rem;
+  font-size: 1rem;
   width: 25px;
   height: var(--cell-size);
 }
@@ -518,7 +540,7 @@ button,
   margin-bottom: 4px;
 }
 
-/* CANDIDATE / HINT STYLES */
+/* Candidate / Hint Styles */
 .candidate-grid {
   position: absolute;
   top: 0;
@@ -534,7 +556,7 @@ button,
 
 .candidate-num {
   color: var(--panel-dark-pink);
-  font-size: clamp(7px, 2vw, 10px);
+  font-size: clamp(6px, 1.5vw, 9px);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -549,7 +571,7 @@ button,
   background-color: transparent;
   border: none;
   text-align: center;
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   font-family: 'Fredoka', sans-serif;
   color: var(--panel-dark-pink);
   font-weight: 600 !important;
@@ -566,32 +588,15 @@ button,
   font-weight: 700 !important;
 }
 
-.fixed {
-  color: #444 !important;
-}
-
-.trial {
-  color: #3498db !important;
-}
-
-.backtrack {
-  background-color: #ffd1d1 !important;
-  color: #c0392b !important;
-}
-
-.error {
-  background-color: #ffcccc !important;
-  color: #d8000c !important;
-  border: 2px solid #d8000c !important;
-}
-
-.user-filled {
-  color: var(--panel-dark-pink) !important;
-}
+.fixed { color: #444 !important; }
+.trial { color: #3498db !important; }
+.backtrack { background-color: #ffd1d1 !important; color: #c0392b !important; }
+.error { background-color: #ffcccc !important; color: #d8000c !important; border: 2px solid #d8000c !important; }
+.user-filled { color: var(--panel-dark-pink) !important; }
 
 .team-icon-btn {
   position: absolute;
-  right: -50px;
+  right: -20px;
   font-size: 2.2rem;
   background: none;
   border: none;
@@ -611,31 +616,31 @@ button,
   margin-top: auto;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 
 .legend-item {
   background: white;
-  padding: 10px 12px;
+  padding: 8px 10px;
   border-radius: 12px;
   display: flex;
   align-items: center;
   font-weight: 700;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   color: #555;
   box-shadow: 0 2px 0 rgba(0, 0, 0, 0.05);
 }
 
 .legend-dot {
-  width: 12px;
-  height: 12px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
-  margin-right: 10px;
+  margin-right: 8px;
   display: inline-block;
   flex-shrink: 0;
 }
 
-/* MODAL & TEAM */
+/* Modal & Team */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -663,14 +668,8 @@ button,
 }
 
 @keyframes popIn {
-  from {
-    transform: translateX(-50%) scale(0.5);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(-50%) scale(1);
-    opacity: 1;
-  }
+  from { transform: scale(0.5); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
 }
 
 .team-grid {
@@ -745,67 +744,36 @@ button,
 }
 
 /* ========================= */
-/* TABLET */
+/* TABLET & MOBILE RESPONSIVE */
 /* ========================= */
-@media (max-width: 1024px) {
-  .pos-left {
-    right: 58%;
-    top: -20px;
-    width: 80px;
-  }
-  .pos-right {
-    left: 58%;
-    top: -25px;
-    width: 80px;
-  }
-  .main-layout {
-    gap: 20px;
-    justify-content: center;
-  }
-  .sidebar-card {
-    width: 140px;
-  }
-  .info-card {
-    width: 200px;
-  }
-}
-
-/* ========================= */
-/* MOBILE BESAR (Responsive Side-by-Side) */
-/* ========================= */
-@media (max-width: 768px) {
+@media (max-width: 900px) {
   body {
+    height: auto;
+    overflow: auto; /* Balikin scroll kalau di mobile */
     align-items: flex-start;
+    padding-bottom: 50px;
   }
 
-  .header {
-    flex-direction: column;
-    gap: 10px;
-    margin-top: 20px;
-  }
+  .sudoku-container { height: auto; }
+  .header { flex-direction: column; gap: 10px; margin-top: 20px; }
+  .title { font-size: 2.5rem; }
+  .pos-left { right: 58%; top: -20px; width: 80px; }
+  .pos-right { left: 58%; top: -25px; width: 80px; }
 
-  .title {
-    font-size: 2.5rem;
-  }
-
-  /* LOGIKA WRAPPING UTAMA */
   .main-layout {
     flex-direction: row;
     flex-wrap: wrap;
-    justify-content: center;
     align-items: flex-start;
-    gap: 10px;
-    width: 100%;
+    gap: 15px;
     padding: 0 10px;
-    box-sizing: border-box;
+    max-height: none;
   }
 
-  /* 1. Grid Paling Atas */
   .grid-card {
     order: 1;
     width: 100%;
-    max-width: 400px;
-    margin-bottom: 5px;
+    max-width: 450px;
+    margin-bottom: 10px;
     padding: 15px;
   }
 
@@ -814,94 +782,78 @@ button,
     transform-origin: top center;
   }
 
-  /* 2. Sidebar Kiri Bawah */
-  .sidebar-card {
+  .sidebar-wrapper {
     order: 2;
-    width: 48%;
-    padding: 10px;
-    height: fit-content !important;
+    flex: 0 0 45%;
+    max-width: 200px;
   }
 
-  .sidebar-content {
-    gap: 8px;
-  }
-
-  .btn-group {
-    flex-direction: column;
-    gap: 6px;
+  .sidebar-card {
+    width: 100% !important;
+    padding: 15px;
+    height: auto !important;
   }
 
   .btn-blob {
-    width: 100%;
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     padding: 8px 4px;
-    height: auto;
   }
 
-  /* 3. Info Panel Kanan Bawah */
   .info-column-wrapper {
     order: 3;
-    width: 48%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    flex: 0 0 45%;
+    max-width: 200px;
+    align-self: flex-start;
   }
 
   .info-card {
     width: 100% !important;
-    padding: 12px;
-    box-sizing: border-box;
+    padding: 15px;
   }
 
   .info-title {
-    font-size: 0.9rem;
+    font-size: 1rem;
     margin-bottom: 8px;
   }
 
   .info-content p {
-    font-size: 0.7rem;
+    font-size: 0.75rem;
     padding: 8px;
     line-height: 1.4;
   }
 
   .legend-item {
-    font-size: 0.7rem;
-    padding: 5px;
+    font-size: 0.75rem;
+    padding: 6px;
   }
 
-  .char-wrapper,
-  .footer-mascot-container {
-    display: none;
-  }
+  .char-wrapper, .footer-mascot-container { display: none; }
 
   .grid-labels-top span {
-    font-size: 0.8rem !important;
+    font-size: 0.9rem !important;
     width: var(--cell-size) !important;
   }
 
   .grid-labels-left span {
-    font-size: 0.8rem !important;
+    font-size: 0.9rem !important;
     height: var(--cell-size) !important;
     justify-content: center;
     margin-right: 4px;
   }
+
+  .team-icon-btn {
+    position: static;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    transform: none;
+    right: auto;
+  }
 }
 
-/* ========================= */
-/* MOBILE KECIL */
-/* ========================= */
-@media (max-width: 380px) {
-  .title {
-    font-size: 1.8rem;
-  }
-  .btn-blob {
-    font-size: 0.65rem;
-    padding: 6px 2px;
-  }
-  .grid-card {
-    padding: 10px;
-  }
-  .grid-board {
-    transform: scale(0.85);
-  }
+@media (max-width: 400px) {
+  .title { font-size: 2rem; }
+  .btn-blob { font-size: 0.7rem; padding: 8px 4px; }
+  .grid-card { padding: 10px; }
+  .grid-board { transform: scale(0.85); }
+  .sidebar-wrapper, .info-column-wrapper { flex: 0 0 48%; }
 }
