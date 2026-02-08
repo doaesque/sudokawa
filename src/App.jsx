@@ -19,22 +19,25 @@ function App() {
 
   return (
     <div className="sudoku-container">
-      {/* Header Section */}
+      {/* Oper fungsi showTeam ke Header */}
       <Header onShowTeam={() => setShowTeam(true)} />
 
-      {/* Main Game Layout */}
       <div className="main-layout">
-        <Sidebar
-          onSolve={handleSolve}
-          onSolveCell={handleSolveCell}
-          onHint={handleHint}
-          isHintActive={isHintActive}
-          onReset={handleReset}
-          onCheck={handleCheck}
-          onLevel={handleLevel}
-          isSolving={isSolving}
-        />
+        {/* KIRI: Tombol Kontrol */}
+        <div className="sidebar-wrapper">
+          <Sidebar
+            onSolve={handleSolve}
+            onSolveCell={handleSolveCell}
+            onHint={handleHint}
+            isHintActive={isHintActive}
+            onReset={handleReset}
+            onCheck={handleCheck}
+            onLevel={handleLevel}
+            isSolving={isSolving}
+          />
+        </div>
 
+        {/* TENGAH: Grid Sudoku */}
         <SudokuGrid
           board={board}
           cellStatus={cellStatus}
@@ -47,14 +50,16 @@ function App() {
           onSkip={handleSkip}
         />
 
-        {/* Info & Characters Column */}
+        {/* KANAN: Notes + Mascot */}
         <div className="info-column-wrapper">
+          {/* Tombol Meet Team SUDAH PINDAH KE HEADER */}
+          
           <InfoPanel message={panelMsg} />
+          
           <ChiikawaCharacters />
         </div>
       </div>
 
-      {/* Team Modal */}
       {showTeam && <TeamModal onClose={() => setShowTeam(false)} />}
     </div>
   )
