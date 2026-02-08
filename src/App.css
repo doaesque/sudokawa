@@ -520,24 +520,16 @@ button, .team-icon-btn, [role="button"] {
 }
 
 .cell-wrapper:nth-child(3n) {
-  border-right: 6px solid #ff9eb5;
+  border-right: 3px solid #ff9eb5;
 }
 
-.cell-wrapper:nth-child(27n + 1),
-.cell-wrapper:nth-child(27n + 2),
-.cell-wrapper:nth-child(27n + 3),
-.cell-wrapper:nth-child(27n + 4),
-.cell-wrapper:nth-child(27n + 5),
-.cell-wrapper:nth-child(27n + 6),
-.cell-wrapper:nth-child(27n + 7),
-.cell-wrapper:nth-child(27n + 8),
-.cell-wrapper:nth-child(27n + 9) {
-  border-top: 6px solid #ff9eb5;
+.cell-wrapper:nth-child(9n) {
+  border-right: 1px solid #ff9eb5;
 }
 
 .grid-board > .cell-wrapper:nth-child(n+19):nth-child(-n+27),
 .grid-board > .cell-wrapper:nth-child(n+46):nth-child(-n+54) {
-  margin-bottom: 4px;
+  border-bottom: 3px solid #ff9eb5;
 }
 
 /* Candidate / Hint Styles */
