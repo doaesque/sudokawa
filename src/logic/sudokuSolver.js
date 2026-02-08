@@ -2,21 +2,26 @@ import { isValid } from './validator'
 
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
 
-export const solveSudoku = async (board, updateBoard, speedRef) => {
+// Algoritma Backtracking dengan visualisasi
+export const solveSudoku = async (board, updateBoard, speedRef, stats = { iterations: 0 }) => {
   for (let row = 0; row < 9; row++) {
     for (let col = 0; col < 9; col++) {
       if (board[row][col] === 0) {
         for (let num = 1; num <= 9; num++) {
           if (isValid(board, row, col, num)) {
-            board[row][col] = num
+            
+            // Statistik
+            stats.iterations++
 
+            board[row][col] = num
             updateBoard([...board.map(r => [...r])], row, col, 'trial')
 
             const currentDelay = speedRef.current.skipMode ? 0 : speedRef.current.delay
             if (currentDelay > 0) await sleep(currentDelay)
 
-            if (await solveSudoku(board, updateBoard, speedRef)) return true
+            if (await solveSudoku(board, updateBoard, speedRef, stats)) return true
 
+            // Backtrack
             board[row][col] = 0
             updateBoard([...board.map(r => [...r])], row, col, 'backtrack')
 

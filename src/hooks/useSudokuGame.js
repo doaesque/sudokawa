@@ -51,19 +51,14 @@ export const useSudokuGame = () => {
     const puzzles = SAMPLES[lv]
     const randomIndex = Math.floor(Math.random() * puzzles.length)
     const chosenPuzzle = puzzles[randomIndex]
-
-    // Deep Copy untuk Board Baru
     const newBoard = chosenPuzzle.map(r => [...r])
     
     setBoard(newBoard)
-    setInitialBoard(newBoard.map(r => [...r])) // Simpan soal awal
-
-    // Reset State Lain
+    setInitialBoard(newBoard.map(r => [...r])) 
     setCandidates(Array(9).fill().map(() => Array(9).fill([])))
     setIsHintActive(false)
     setCellStatus(newBoard.map(r => r.map(c => c !== 0 ? 'fixed' : '')))
     
-    // Cari Kunci Jawaban di Awal
     const solved = getSolvedBoard(newBoard)
     setSolutionKey(solved)
 
@@ -74,11 +69,8 @@ export const useSudokuGame = () => {
 
   const handleInputChange = (e, r, c) => {
     if (isSolving) return
-    
-    // Jangan edit jika sel 'fixed' (soal level)
     if (cellStatus[r][c] === 'fixed') return
 
-    // Update status warna jika sebelumnya error/trial
     if (cellStatus[r][c] !== '' && cellStatus[r][c] !== 'user-filled') {
       const ns = cellStatus.map(row => [...row])
       ns[r][c] = 'user-filled'
@@ -86,32 +78,19 @@ export const useSudokuGame = () => {
     }
 
     const val = e.target.value
-    // Validasi input: Kosong atau Angka 1-9
     if (val === '' || (/^[1-9]$/.test(val) && val.length === 1)) {
       const num = val === '' ? 0 : parseInt(val)
-      
-      // DEEP COPY BOARD (PENTING AGAR REACT RENDER ULANG)
       const newBoard = board.map(row => [...row])
       newBoard[r][c] = num
       setBoard(newBoard)
 
-      // Jika input manual (bukan dari level), reset kunci jawaban
-      // Agar 'Solve Cell' menghitung ulang berdasarkan input user terbaru
-      if (!initialBoard) {
-         setSolutionKey(null)
-      }
-
-      // Update Candidates Realtime jika aktif
-      if (isHintActive) {
-        setCandidates(calculateAllCandidates(newBoard))
-      }
+      if (!initialBoard) setSolutionKey(null)
+      if (isHintActive) setCandidates(calculateAllCandidates(newBoard))
     }
   }
 
   const handleHint = () => {
     if (isSolving) return
-    
-    // TOGGLE HINT (Tidak perlu cek initialBoard/level)
     if (isHintActive) {
       setIsHintActive(false)
       setCandidates(Array(9).fill().map(() => Array(9).fill([])))
@@ -136,11 +115,7 @@ export const useSudokuGame = () => {
       return
     }
 
-    // LOGIKA PINTAR: 
-    // 1. Cek apakah sudah ada kunci jawaban (dari Level)
-    // 2. Jika tidak (Custom Mode / User Input), cari solusi sekarang juga
     let currentSolution = solutionKey
-    
     if (!currentSolution) {
       const solved = getSolvedBoard(board)
       if (!solved) {
@@ -148,35 +123,32 @@ export const useSudokuGame = () => {
         return
       }
       currentSolution = solved
-      // Jangan simpan permanen di mode custom, karena user bisa ubah board lagi
-      // Tapi untuk performa sesaat, kita pakai hasil ini.
     }
 
     const answer = currentSolution[r][c]
-    
-    // Update Board
     const newBoard = board.map(row => [...row])
     newBoard[r][c] = answer
     setBoard(newBoard)
-
-    // Update Status
     const newStatus = cellStatus.map(row => [...row])
     newStatus[r][c] = 'trial'
     setCellStatus(newStatus)
-    
     setPanelMsg(`✨ Terisi angka: ${answer}`)
 
-    if (isHintActive) {
-      setCandidates(calculateAllCandidates(newBoard))
-    }
+    if (isHintActive) setCandidates(calculateAllCandidates(newBoard))
   }
 
   const handleSolve = async () => {
     if (isSolving) return
     
-    // Matikan hint saat animasi solve
     setIsHintActive(false)
     setCandidates(Array(9).fill().map(() => Array(9).fill([])))
+
+    // 1. Hitung Sel Kosong Awal
+    const emptyCellsCount = board.flat().filter(cell => cell === 0).length
+    if (emptyCellsCount === 0) {
+      setPanelMsg("Papan sudah penuh!")
+      return
+    }
 
     // Validasi input sebelum solve
     for (let r = 0; r < 9; r++) {
@@ -185,7 +157,6 @@ export const useSudokuGame = () => {
           const val = board[r][c]
           const tempBoard = board.map(row => [...row])
           tempBoard[r][c] = 0
-
           if (!isValid(tempBoard, r, c, val)) {
             setPanelMsg(`⚠️ Input salah di baris ${r+1} kolom ${c+1}! Perbaiki dulu.`)
             const ns = cellStatus.map(row => [...row])
@@ -201,11 +172,14 @@ export const useSudokuGame = () => {
     setPanelMsg("🔍 Mencari solusi...")
     speedRef.current.skipMode = false
 
-    // Bersihkan error visual
     const cleanStatus = cellStatus.map(row => row.map(s => s === 'error' ? 'user-filled' : s))
     setCellStatus(cleanStatus)
 
     const boardToSolve = board.map(r => [...r])
+
+    // Stats & Timer
+    const stats = { iterations: 0 }
+    const startTime = performance.now()
 
     const updateVisual = (nb, r, c, status) => {
       setBoard(nb)
@@ -216,15 +190,32 @@ export const useSudokuGame = () => {
       })
     }
 
-    const solved = await solveSudoku(boardToSolve, updateVisual, speedRef)
+    const solved = await solveSudoku(boardToSolve, updateVisual, speedRef, stats)
+
+    const endTime = performance.now()
+    const duration = (endTime - startTime).toFixed(0)
 
     setIsSolving(false)
+
     if (solved) {
-        setPanelMsg("Selesai! 🎉")
-        // Update solution key agar validasi (Check) sesuai hasil akhir
         setSolutionKey(boardToSolve) 
+        setPanelMsg(
+`🎉 SELESAI!
+• Sel Kosong: ${emptyCellsCount}
+• Iterasi: ${stats.iterations} langkah
+• Waktu: ${duration} ms
+• Status: VALID ✅`
+        )
     } else {
-        setPanelMsg("Tidak ada solusi dari posisi ini.")
+        setPanelMsg(
+`❌ GAGAL!
+
+📊 Statistik:
+• Sel Kosong: ${emptyCellsCount}
+• Iterasi: ${stats.iterations} langkah
+• Waktu: ${duration} ms
+• Status: INVALID ⛔`
+        )
     }
   }
 
@@ -235,26 +226,21 @@ export const useSudokuGame = () => {
 
     for (let r = 0; r < 9; r++) {
       for (let c = 0; c < 9; c++) {
-        // Cek sel yang terisi dan bukan soal
         if (board[r][c] !== 0 && cellStatus[r][c] !== 'fixed') {
           let isWrong = false;
-
           if (solutionKey) {
-            // Jika ada kunci jawaban, bandingkan langsung
             if (board[r][c] !== solutionKey[r][c]) isWrong = true;
           } else {
-            // Jika mode custom, cek validitas aturan sudoku saja
             const val = board[r][c]
             const tempBoard = board.map(row => [...row])
             tempBoard[r][c] = 0
             if (!isValid(tempBoard, r, c, val)) isWrong = true;
           }
-
           if (isWrong) {
             newStatus[r][c] = 'error'
             errorCount++
           } else if (newStatus[r][c] === 'error') {
-            newStatus[r][c] = 'user-filled' // Balikin warna normal jika sudah benar
+            newStatus[r][c] = 'user-filled'
           }
         }
       }
@@ -271,6 +257,7 @@ export const useSudokuGame = () => {
     setSolutionKey(null)
     setIsHintActive(false)
     setCandidates(Array(9).fill().map(() => Array(9).fill([])))
+    setSpeed(50) 
     setPanelMsg("Papan bersih. Silakan pilih level atau isi sendiri.")
   }
 
