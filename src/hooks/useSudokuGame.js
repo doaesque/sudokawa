@@ -4,11 +4,12 @@ import { isValid } from '../logic/validator'
 import { SAMPLES } from '../data/samples'
 
 export const useSudokuGame = () => {
+  // --- STATE ---
   const [board, setBoard] = useState(Array(9).fill().map(() => Array(9).fill(0)))
   const [cellStatus, setCellStatus] = useState(Array(9).fill().map(() => Array(9).fill('')))
   const [initialBoard, setInitialBoard] = useState(null)
   const [solutionKey, setSolutionKey] = useState(null)
-  const [panelMsg, setPanelMsg] = useState("Pilih level untuk memulai permainan!")
+  const [panelMsg, setPanelMsg] = useState("Pilih level atau isi papan sendiri!")
   const [activeCell, setActiveCell] = useState(null)
 
   const [candidates, setCandidates] = useState(Array(9).fill().map(() => Array(9).fill([])))
@@ -23,6 +24,9 @@ export const useSudokuGame = () => {
     speedRef.current.delay = speed
   }, [speed])
 
+  // --- LOGIC HELPERS ---
+
+  // Hitung Candidates (Pencil Marks)
   const calculateAllCandidates = (currentBoard) => {
     const newCandidates = Array(9).fill().map(() => Array(9).fill([]))
     for (let r = 0; r < 9; r++) {
@@ -39,6 +43,8 @@ export const useSudokuGame = () => {
     return newCandidates
   }
 
+  // --- HANDLERS ---
+
   const handleLevel = (lv) => {
     if (isSolving) return
 
@@ -46,43 +52,143 @@ export const useSudokuGame = () => {
     const randomIndex = Math.floor(Math.random() * puzzles.length)
     const chosenPuzzle = puzzles[randomIndex]
 
+    // Deep Copy untuk Board Baru
     const newBoard = chosenPuzzle.map(r => [...r])
+    
     setBoard(newBoard)
-    setInitialBoard(newBoard.map(r => [...r]))
+    setInitialBoard(newBoard.map(r => [...r])) // Simpan soal awal
 
+    // Reset State Lain
     setCandidates(Array(9).fill().map(() => Array(9).fill([])))
     setIsHintActive(false)
-
+    setCellStatus(newBoard.map(r => r.map(c => c !== 0 ? 'fixed' : '')))
+    
+    // Cari Kunci Jawaban di Awal
     const solved = getSolvedBoard(newBoard)
     setSolutionKey(solved)
 
-    setCellStatus(newBoard.map(r => r.map(c => c !== 0 ? 'fixed' : '')))
     setPanelMsg(`Mode ${lv.toUpperCase()} (Soal #${randomIndex + 1}) siap!`)
     setSpeed(50)
     setActiveCell(null)
   }
 
-  const handleSkip = () => {
-    speedRef.current.skipMode = true
-    setSpeed(0)
+  const handleInputChange = (e, r, c) => {
+    if (isSolving) return
+    
+    // Jangan edit jika sel 'fixed' (soal level)
+    if (cellStatus[r][c] === 'fixed') return
+
+    // Update status warna jika sebelumnya error/trial
+    if (cellStatus[r][c] !== '' && cellStatus[r][c] !== 'user-filled') {
+      const ns = cellStatus.map(row => [...row])
+      ns[r][c] = 'user-filled'
+      setCellStatus(ns)
+    }
+
+    const val = e.target.value
+    // Validasi input: Kosong atau Angka 1-9
+    if (val === '' || (/^[1-9]$/.test(val) && val.length === 1)) {
+      const num = val === '' ? 0 : parseInt(val)
+      
+      // DEEP COPY BOARD (PENTING AGAR REACT RENDER ULANG)
+      const newBoard = board.map(row => [...row])
+      newBoard[r][c] = num
+      setBoard(newBoard)
+
+      // Jika input manual (bukan dari level), reset kunci jawaban
+      // Agar 'Solve Cell' menghitung ulang berdasarkan input user terbaru
+      if (!initialBoard) {
+         setSolutionKey(null)
+      }
+
+      // Update Candidates Realtime jika aktif
+      if (isHintActive) {
+        setCandidates(calculateAllCandidates(newBoard))
+      }
+    }
+  }
+
+  const handleHint = () => {
+    if (isSolving) return
+    
+    // TOGGLE HINT (Tidak perlu cek initialBoard/level)
+    if (isHintActive) {
+      setIsHintActive(false)
+      setCandidates(Array(9).fill().map(() => Array(9).fill([])))
+      setPanelMsg("Pencil marks disembunyikan.")
+    } else {
+      setIsHintActive(true)
+      setCandidates(calculateAllCandidates(board))
+      setPanelMsg("📝 Pencil marks ditampilkan!")
+    }
+  }
+
+  const handleSolveCell = () => {
+    if (isSolving) return
+    if (!activeCell) {
+      setPanelMsg("⚠️ Klik kotak yang mau diisi!")
+      return
+    }
+
+    const { r, c } = activeCell
+    if (cellStatus[r][c] === 'fixed') {
+      setPanelMsg("⛔ Ini angka soal!")
+      return
+    }
+
+    // LOGIKA PINTAR: 
+    // 1. Cek apakah sudah ada kunci jawaban (dari Level)
+    // 2. Jika tidak (Custom Mode / User Input), cari solusi sekarang juga
+    let currentSolution = solutionKey
+    
+    if (!currentSolution) {
+      const solved = getSolvedBoard(board)
+      if (!solved) {
+        setPanelMsg("⚠️ Papan ini tidak memiliki solusi valid!")
+        return
+      }
+      currentSolution = solved
+      // Jangan simpan permanen di mode custom, karena user bisa ubah board lagi
+      // Tapi untuk performa sesaat, kita pakai hasil ini.
+    }
+
+    const answer = currentSolution[r][c]
+    
+    // Update Board
+    const newBoard = board.map(row => [...row])
+    newBoard[r][c] = answer
+    setBoard(newBoard)
+
+    // Update Status
+    const newStatus = cellStatus.map(row => [...row])
+    newStatus[r][c] = 'trial'
+    setCellStatus(newStatus)
+    
+    setPanelMsg(`✨ Terisi angka: ${answer}`)
+
+    if (isHintActive) {
+      setCandidates(calculateAllCandidates(newBoard))
+    }
   }
 
   const handleSolve = async () => {
     if (isSolving) return
-    setCandidates(Array(9).fill().map(() => Array(9).fill([])))
+    
+    // Matikan hint saat animasi solve
     setIsHintActive(false)
+    setCandidates(Array(9).fill().map(() => Array(9).fill([])))
 
+    // Validasi input sebelum solve
     for (let r = 0; r < 9; r++) {
       for (let c = 0; c < 9; c++) {
         if (board[r][c] !== 0 && cellStatus[r][c] !== 'fixed') {
           const val = board[r][c]
-
           const tempBoard = board.map(row => [...row])
           tempBoard[r][c] = 0
 
           if (!isValid(tempBoard, r, c, val)) {
             setPanelMsg(`⚠️ Input salah di baris ${r+1} kolom ${c+1}! Perbaiki dulu.`)
-            const ns = [...cellStatus]
+            const ns = cellStatus.map(row => [...row])
             ns[r][c] = 'error'
             setCellStatus(ns)
             return
@@ -95,7 +201,8 @@ export const useSudokuGame = () => {
     setPanelMsg("🔍 Mencari solusi...")
     speedRef.current.skipMode = false
 
-    const cleanStatus = cellStatus.map(row => row.map(s => s === 'error' ? '' : s))
+    // Bersihkan error visual
+    const cleanStatus = cellStatus.map(row => row.map(s => s === 'error' ? 'user-filled' : s))
     setCellStatus(cleanStatus)
 
     const boardToSolve = board.map(r => [...r])
@@ -103,7 +210,7 @@ export const useSudokuGame = () => {
     const updateVisual = (nb, r, c, status) => {
       setBoard(nb)
       setCellStatus(prev => {
-        const ns = [...prev.map(row => [...row])]
+        const ns = prev.map(row => [...row])
         ns[r][c] = status
         return ns
       })
@@ -112,56 +219,12 @@ export const useSudokuGame = () => {
     const solved = await solveSudoku(boardToSolve, updateVisual, speedRef)
 
     setIsSolving(false)
-    setPanelMsg(solved ? "Selesai! 🎉" : "Tidak ada solusi dari posisi ini.")
-  }
-
-  const handleSolveCell = () => {
-    if (isSolving) return
-    if (!solutionKey) {
-      setPanelMsg("⚠️ Pilih level dulu!")
-      return
-    }
-    if (!activeCell) {
-      setPanelMsg("⚠️ Klik kotak yang mau diisi!")
-      return
-    }
-
-    const { r, c } = activeCell
-    if (cellStatus[r][c] === 'fixed') {
-      setPanelMsg("⛔ Ini angka soal!")
-      return
-    }
-
-    const answer = solutionKey[r][c]
-    const newBoard = [...board]
-    newBoard[r][c] = answer
-    setBoard(newBoard)
-
-    const newStatus = [...cellStatus]
-    newStatus[r][c] = 'trial'
-    setCellStatus(newStatus)
-    setPanelMsg(`✨ Jawabannya: ${answer}`)
-
-    if (isHintActive) {
-      setCandidates(calculateAllCandidates(newBoard))
-    }
-  }
-
-  const handleHint = () => {
-    if (isSolving) return
-    if (!initialBoard) {
-      setPanelMsg("⚠️ Pilih level dulu!")
-      return
-    }
-
-    if (isHintActive) {
-      setIsHintActive(false)
-      setCandidates(Array(9).fill().map(() => Array(9).fill([])))
-      setPanelMsg("Pencil marks disembunyikan.")
+    if (solved) {
+        setPanelMsg("Selesai! 🎉")
+        // Update solution key agar validasi (Check) sesuai hasil akhir
+        setSolutionKey(boardToSolve) 
     } else {
-      setIsHintActive(true)
-      setCandidates(calculateAllCandidates(board))
-      setPanelMsg("📝 Pencil marks ditampilkan!")
+        setPanelMsg("Tidak ada solusi dari posisi ini.")
     }
   }
 
@@ -172,25 +235,26 @@ export const useSudokuGame = () => {
 
     for (let r = 0; r < 9; r++) {
       for (let c = 0; c < 9; c++) {
+        // Cek sel yang terisi dan bukan soal
         if (board[r][c] !== 0 && cellStatus[r][c] !== 'fixed') {
+          let isWrong = false;
+
           if (solutionKey) {
-            if (board[r][c] !== solutionKey[r][c]) {
-              newStatus[r][c] = 'error'
-              errorCount++
-            } else if (newStatus[r][c] === 'error') {
-              newStatus[r][c] = 'user-filled'
-            }
+            // Jika ada kunci jawaban, bandingkan langsung
+            if (board[r][c] !== solutionKey[r][c]) isWrong = true;
           } else {
+            // Jika mode custom, cek validitas aturan sudoku saja
             const val = board[r][c]
             const tempBoard = board.map(row => [...row])
             tempBoard[r][c] = 0
+            if (!isValid(tempBoard, r, c, val)) isWrong = true;
+          }
 
-            if (!isValid(tempBoard, r, c, val)) {
-              newStatus[r][c] = 'error'
-              errorCount++
-            } else if (newStatus[r][c] === 'error') {
-              newStatus[r][c] = 'user-filled'
-            }
+          if (isWrong) {
+            newStatus[r][c] = 'error'
+            errorCount++
+          } else if (newStatus[r][c] === 'error') {
+            newStatus[r][c] = 'user-filled' // Balikin warna normal jika sudah benar
           }
         }
       }
@@ -207,28 +271,12 @@ export const useSudokuGame = () => {
     setSolutionKey(null)
     setIsHintActive(false)
     setCandidates(Array(9).fill().map(() => Array(9).fill([])))
-    setPanelMsg("Papan dibersihkan total. Silakan pilih level lagi.")
+    setPanelMsg("Papan bersih. Silakan pilih level atau isi sendiri.")
   }
 
-  const handleInputChange = (e, r, c) => {
-    if (isSolving) return
-    if (cellStatus[r][c] === 'error' || cellStatus[r][c] === 'trial' || cellStatus[r][c] === '') {
-      const ns = [...cellStatus]
-      ns[r][c] = 'user-filled'
-      setCellStatus(ns)
-    }
-
-    const val = e.target.value
-    if (val === '' || (/^[1-9]$/.test(val) && val.length === 1)) {
-      const num = val === '' ? 0 : parseInt(val)
-      const newBoard = [...board]
-      newBoard[r][c] = num
-      setBoard(newBoard)
-
-      if (isHintActive) {
-        setCandidates(calculateAllCandidates(newBoard))
-      }
-    }
+  const handleSkip = () => {
+    speedRef.current.skipMode = true
+    setSpeed(0)
   }
 
   return {

@@ -24,167 +24,185 @@ html, body { cursor: url('/chiikawa.png'), auto !important; }
 button, .team-icon-btn, .character-img, [role="button"] { cursor: url('/hachikaware.png'), pointer !important; }
 
 /* ========================= */
-/* LAYOUT UTAMA */
+/* LAYOUT */
 /* ========================= */
-.sudoku-container { 
-  display: flex; flex-direction: column; align-items: center; 
-  width: 100%; max-width: 1300px; padding-bottom: 30px; 
-}
+.sudoku-container { display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 1300px; padding-bottom: 30px; }
 
-/* HEADER: Menggunakan Flexbox Rapi */
+/* HEADER FIX: Z-INDEX TINGGI AGAR TOOLTIP/BUBBLE DI ATAS PANEL */
 .header {
-  position: relative; /* Context untuk tombol absolut */
   display: flex; justify-content: center; align-items: center;
   width: 90%; margin-bottom: 30px; margin-top: 40px;
-  z-index: 200; /* Header paling atas agar tooltip tidak ketutupan */
+  position: relative; z-index: 200; /* Paling tinggi! */
 }
 
-/* Container Judul & Karakter (Tengah) */
-.header-content {
-  display: flex; align-items: center; justify-content: center; gap: 20px;
-}
+.title { color: var(--panel-dark-pink); font-size: 3.5rem; font-weight: 600; margin: 0; text-align: center; text-shadow: none; }
 
-.title { 
-  color: var(--panel-dark-pink); font-size: 3.5rem; font-weight: 600; 
-  margin: 0; text-align: center; text-shadow: none; 
-}
-
-/* Layout Grid & Panel (Z-Index Rendah) */
-.main-layout { 
-  display: flex; gap: 30px; align-items: flex-start; 
+/* MAIN LAYOUT: Z-INDEX LEBIH RENDAH DARI HEADER */
+.main-layout {
+  display: flex; gap: 30px; align-items: flex-start;
   justify-content: center; width: 100%; position: relative; 
-  z-index: 10; 
+  z-index: 10;
 }
 
 /* ========================= */
-/* KARAKTER & BUBBLE */
+/* CHARACTERS (POSISI & ANIMASI) */
 /* ========================= */
 
-.char-container {
-  position: relative; /* Untuk bubble absolute */
-  display: flex; justify-content: center; align-items: center;
-  cursor: pointer;
+/* Wrapper Utama */
+.char-wrapper {
+  position: absolute; z-index: 10; user-select: none;
+  display: flex; justify-content: center; 
+  /* Pointer events none agar area kosong wrapper ga ngeblok klik, 
+     tapi gambarnya nanti di-enable lagi */
+  pointer-events: none; 
 }
 
+/* Gambar Karakter */
 .character-img {
-  width: 80px; height: auto; 
-  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1); /* Efek membal */
+  width: 100%; height: auto; 
+  transition: transform 0.2s ease;
+  pointer-events: auto; /* Aktifkan klik cuma di gambarnya */
 }
 
-.character-img:hover { transform: scale(1.15); }
+/* REVISI: Hover CUMA ZOOM, HAPUS ROTATE */
+.character-img:hover { transform: scale(1.15); } 
 .character-img:active { transform: scale(0.95); }
 
-/* Speech Bubble */
+/* --- Posisi Spesifik (Disesuaikan agar lebih rapi) --- */
+/* Posisi relatif terhadap .header (bukan body/screen) */
+.pos-left    { right: 58%; top: -20px; width: 90px; } /* Geser lebih dekat ke judul */
+.pos-right   { left: 58%; top: -25px; width: 90px; }  /* Geser lebih dekat ke judul */
+
+/* Footer Karakter (Relatif terhadap .info-column-wrapper nanti) */
+.pos-footer1 { right: 120px; bottom: 0; width: 90px; }
+.pos-footer2 { right: 0; bottom: 0; width: 110px; }
+
+/* SPEECH BUBBLE (DEFAULT: Panah di Bawah, Bubble di Atas) */
 .speech-bubble {
-  position: absolute; 
-  background: white; border: 3px solid var(--panel-dark-pink);
+  position: absolute; background: white; border: 3px solid var(--panel-dark-pink);
   color: var(--panel-dark-pink); padding: 8px 12px; border-radius: 15px;
-  font-weight: 700; font-size: 0.9rem; white-space: nowrap; 
-  z-index: 300; 
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
-  animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  
-  /* Posisi Default: Di Bawah Karakter */
-  top: 100%; left: 50%; transform: translateX(-50%); margin-top: 10px;
+  font-weight: 700; font-size: 0.9rem; white-space: nowrap; z-index: 300; /* Di atas segalanya */
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1); animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.speech-bubble::after {
+  content: ''; position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%);
+  border-width: 8px 8px 0; border-style: solid; border-color: var(--panel-dark-pink) transparent transparent transparent;
 }
 
-/* Panah Bubble Menghadap Atas */
+/* CLASS BARU: BUBBLE DOWN (Panah di Atas, Bubble di Bawah) - KHUSUS HEADER */
 .bubble-down::after {
-  content: ''; position: absolute; 
-  bottom: 100%; left: 50%; transform: translateX(-50%);
-  border-width: 0 8px 8px; border-style: solid; 
+  bottom: auto; 
+  top: -8px; /* Panah pindah ke atas bubble */
+  border-width: 0 8px 8px; /* Segitiga menghadap atas */
   border-color: transparent transparent var(--panel-dark-pink) transparent;
 }
 
-/* ========================= */
-/* TOMBOL MEET THE TEAM */
-/* ========================= */
+/* BUTTON HEADER */
 .team-icon-btn {
-  position: absolute; right: 0; top: 50%; transform: translateY(-50%);
-  background: none; border: none; cursor: pointer; padding: 0;
-  filter: drop-shadow(1px 1px 2px rgba(255, 133, 161, 0.5)); 
+  position: absolute;
+  right: -50px;
+  font-size: 2.2rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  filter: drop-shadow(1px 1px 2px rgba(255, 133, 161, 0.5));
   transition: transform 0.2s;
-  z-index: 210;
+  pointer-events: auto;
+  /*Penting!*/z-index: 250;
+   /* Di atas karakter header */;
+  -webkit-filter: drop-shadow(1px 1px 2px rgba(255, 133, 161, 0.5));
 }
-.team-icon-btn:hover { transform: translateY(-50%) scale(1.1); }
-.character-button { width: 130px; height: auto; }
+.team-icon-btn:hover { transform: scale(1.1); }
 
-/* TOOLTIP FIX: Z-Index Super Tinggi & Posisi Aman */
+/* TOOLTIP - Fix Z-INDEX */
 [data-tooltip]:hover::after {
-  content: attr(data-tooltip); 
-  position: absolute; 
-  background: #fff; color: var(--text-pink); 
-  padding: 6px 10px; border-radius: 8px; 
-  font-size: 0.8rem; font-weight: 700; white-space: nowrap;
+  content: attr(data-tooltip); position: absolute; left: 50%; bottom: 110%; transform: translateX(-50%);
+  background: #fff; color: var(--text-pink); padding: 6px 10px; border-radius: 8px; font-size: 0.8rem; font-weight: 700;
   box-shadow: 0 5px 15px rgba(255, 133, 161, 0.2); 
-  pointer-events: none;
-  
-  /* Agar muncul di atas segalanya */
-  z-index: 99999 !important; 
+  z-index: 10000; /* SANGAT TINGGI */
+  pointer-events: none; white-space: nowrap;
 }
-
-/* Posisi Tooltip Header: Di Bawah Tombol */
-.team-icon-btn[data-tooltip]:hover::after {
-  left: 50%; top: 100%; bottom: auto; 
-  transform: translateX(-50%); margin-top: 10px;
-}
-/* Posisi Tooltip Sidebar: Di Kanan Tombol */
-.sidebar-card [data-tooltip]:hover::after {
-  left: 100%; top: 50%; bottom: auto;
-  transform: translateY(-50%); margin-left: 10px;
-}
-
+.sidebar-card [data-tooltip]:hover::after { left: 105%; top: 50%; bottom: auto; transform: translateY(-50%); }
+.team-icon-btn[data-tooltip]:hover::after { bottom: auto; top: 110%; }
 
 /* ========================= */
-/* GRID LAYOUT FIX */
+/* SIDEBAR, GRID, INFO PANEL */
 /* ========================= */
+.sidebar-card {
+  background-color: var(--panel-pink); padding: 25px 15px; border-radius: 20px;
+  display: flex; flex-direction: column; width: 150px; box-shadow: 0 8px 0 rgba(0,0,0,0.05);
+  position: relative; height: fit-content !important; align-self: flex-start !important;
+  z-index: 50; /* Lebih rendah dari Header (200) */
+}
+.sidebar-content { display: flex; flex-direction: column; gap: 30px; }
+.btn-group { display: flex; flex-direction: column; gap: 10px; }
+.btn-blob {
+  background: white; border: none; padding: 12px 5px; border-radius: 15px;
+  color: var(--text-pink); font-family: 'Fredoka', sans-serif; font-size: 1rem; font-weight: 700; cursor: pointer;
+  transition: all 0.2s; text-transform: uppercase; transform: rotate(-1deg); width: 100%; position: relative;
+}
+.btn-blob:hover { transform: scale(1.05) rotate(0deg); background-color: var(--btn-hover); }
+.btn-blob:disabled { background-color: #e0e0e0; color: #aaa; cursor: not-allowed; transform: none; box-shadow: none; }
+
 .grid-card {
-  background-color: var(--panel-pink); border-radius: 20px; 
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  box-shadow: 0 10px 25px rgba(255, 158, 181, 0.4); 
-  padding: 25px; padding-right: 45px; padding-bottom: 25px;
-  z-index: 50; position: relative;
+  background-color: var(--panel-pink); border-radius: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  box-shadow: 0 10px 25px rgba(255, 158, 181, 0.4); padding: 25px; padding-right: 45px; padding-bottom: 25px;
+  z-index: 50; /* Lebih rendah dari Header (200) */
 }
+.board-area { position: relative; z-index: 10; }
 
-.board-area { 
-  position: relative; /* Relatif agar overlay mengikuti area ini */
-  z-index: 10; 
-}
-
-/* FIX OVERLAY: Transparan & Absolut terhadap board-area */
+/* REVISI OVERLAY: TRANSPARAN & TIDAK NGEBLUR */
 .grid-overlay { 
-  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-  background: transparent; 
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+  background: transparent; /* Transparan total */
+  backdrop-filter: none;   /* Hapus blur */
   z-index: 999; cursor: wait; 
 }
 
-/* Label Angka (Atas) */
-.grid-labels-top { 
-  display: grid; grid-template-columns: repeat(9, var(--cell-size)); gap: 0; 
-  margin-bottom: 0px; margin-left: 29px; /* 25px lebar huruf + 4px padding */
+/* REVISI LABEL ATAS (ANGKA) */
+.grid-labels-top {
+  display: grid; 
+  grid-template-columns: repeat(9, var(--cell-size)); 
+  gap: 0; 
+  /* Jarak ke grid diperkecil (0px atau 2px) */
+  margin-bottom: 2px; 
+  /* Margin Kiri = Lebar Huruf (25px) + Margin Kanan Huruf (2px) + Padding Papan (4px) = 31px */
+  margin-left: 31px;
 }
+
+.grid-labels-top span:nth-child(3), .grid-labels-top span:nth-child(6) { margin-right: 0; }
 .grid-labels-top span { text-align: center; color: white; font-weight: 700; font-size: 1.1rem; }
 
 .grid-body { display: flex; align-items: flex-start; }
 
-/* Label Huruf (Kiri) */
+/* REVISI LABEL KIRI (HURUF) */
 .grid-labels-left { 
-  display: grid; grid-template-rows: repeat(9, var(--cell-size)); gap: 0; 
-  margin-right: 0px; padding-top: 4px; /* Samakan padding papan */
+  display: grid; 
+  grid-template-rows: repeat(9, var(--cell-size)); 
+  gap: 0; 
+  /* Jarak ke grid diperkecil */
+  margin-right: 2px; 
+  /* Padding atas disamakan dengan padding papan (4px) agar sejajar baris 1 */
+  padding-top: 4px; 
 }
+
+/* SOLUSI: Pastikan huruf A-I juga seragam seperti 1-9 */
+.grid-labels-left span:nth-child(3), .grid-labels-left span:nth-child(6) { margin-bottom: 0; }
 .grid-labels-left span { 
   display: flex; align-items: center; justify-content: flex-end; 
-  color: white; font-weight: 700; font-size: 1.1rem; width: 25px; height: var(--cell-size);
+  color: white; font-weight: 700; font-size: 1.1rem; width: 25px;
+  /* Pastikan tinggi baris pas */
+  height: var(--cell-size);
 }
 
-/* Papan Grid */
+/* GRID BOARD */
 .grid-board {
-  display: grid; position: relative; 
+  display: grid; position: relative;
   grid-template-columns: repeat(9, var(--cell-size)); 
   grid-template-rows: repeat(9, var(--cell-size));
-  gap: 0; background: #ff9eb5; padding: 4px; 
+  gap: 0; background: #ff9eb5; padding: 4px; /* Padding ini yang bikin offset */
 }
-
 .cell-wrapper { width: var(--cell-size); height: var(--cell-size); background: white; border: 1px solid #ff9eb5; box-sizing: border-box; }
 .cell-wrapper:nth-child(3n) { border-right: 6px solid #ff9eb5; }
 .cell-wrapper:nth-child(27n + 1), .cell-wrapper:nth-child(27n + 2), .cell-wrapper:nth-child(27n + 3),
@@ -208,32 +226,6 @@ button, .team-icon-btn, .character-img, [role="button"] { cursor: url('/hachikaw
 .error { background-color: #ffcccc !important; color: #d8000c !important; border: 2px solid #d8000c !important; }
 .user-filled { color: var(--panel-dark-pink) !important; }
 
-/* ========================= */
-/* PANEL LAINNYA */
-/* ========================= */
-.sidebar-card {
-  background-color: var(--panel-pink); padding: 25px 15px; border-radius: 20px;
-  display: flex; flex-direction: column; width: 150px; box-shadow: 0 8px 0 rgba(0,0,0,0.05);
-  position: relative; height: fit-content !important; align-self: flex-start !important;
-  z-index: 50; 
-}
-.sidebar-content { display: flex; flex-direction: column; gap: 30px; }
-.btn-group { display: flex; flex-direction: column; gap: 10px; }
-.btn-blob {
-  background: white; border: none; padding: 12px 5px; border-radius: 15px;
-  color: var(--text-pink); font-family: 'Fredoka', sans-serif; font-size: 1rem; font-weight: 700; cursor: pointer;
-  transition: all 0.2s; text-transform: uppercase; transform: rotate(-1deg); width: 100%; position: relative;
-}
-.btn-blob:hover { transform: scale(1.05) rotate(0deg); background-color: var(--btn-hover); }
-.btn-blob:disabled { background-color: #e0e0e0; color: #aaa; cursor: not-allowed; transform: none; box-shadow: none; }
-
-.info-card { background-color: var(--panel-pink); padding: 25px; border-radius: 20px; width: 220px; color: white; box-shadow: 0 8px 0 rgba(0,0,0,0.05); display: flex; flex-direction: column; z-index: 50; gap: 10px; height: auto; }
-.info-title { color: white; font-size: 1.3rem; font-weight: 600; text-align: center; margin: 0; text-shadow: 1px 1px 0 rgba(0,0,0,0.1); }
-.info-content p { line-height: 1.5; font-size: 0.95rem; margin: 0; background: rgba(255, 255, 255, 0.2); padding: 12px; border-radius: 15px; }
-.legend-box { margin-top: auto; display: flex; flex-direction: column; gap: 8px; }
-.legend-item { background: white; padding: 10px 12px; border-radius: 12px; display: flex; align-items: center; font-weight: 700; font-size: 0.9rem; color: #555; box-shadow: 0 2px 0 rgba(0,0,0,0.05); }
-.legend-dot { width: 12px; height: 12px; border-radius: 50%; margin-right: 10px; display: inline-block; flex-shrink: 0; }
-
 .playlist-container { margin-top: 15px; width: 100%; padding-left: 30px; display: flex; align-items: center; justify-content: space-between; gap: 15px; }
 .speed-control { display: flex; align-items: center; gap: 10px; flex-grow: 1; background: rgba(255, 255, 255, 0.2); padding: 8px 15px; border-radius: 20px; }
 .speed-label { color: white; font-weight: 700; font-size: 0.9rem; white-space: nowrap; }
@@ -242,8 +234,16 @@ button, .team-icon-btn, .character-img, [role="button"] { cursor: url('/hachikaw
 .btn-skip { background: white; border: none; width: 40px; height: 40px; border-radius: 50%; color: var(--panel-dark-pink); font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: 0.2s; }
 .btn-skip:hover { transform: scale(1.1); background: #fff0f5; }
 
+.info-card { background-color: var(--panel-pink); padding: 25px; border-radius: 20px; width: 220px; color: white; box-shadow: 0 8px 0 rgba(0,0,0,0.05); display: flex; flex-direction: column; z-index: 50; gap: 10px; height: auto; }
+.info-title { color: white; font-size: 1.3rem; font-weight: 600; text-align: center; margin: 0; text-shadow: 1px 1px 0 rgba(0,0,0,0.1); }
+.info-content p { line-height: 1.5; font-size: 0.95rem; margin: 0; background: rgba(255, 255, 255, 0.2); padding: 12px; border-radius: 15px; }
+.legend-box { margin-top: auto; display: flex; flex-direction: column; gap: 8px; }
+.legend-item { background: white; padding: 10px 12px; border-radius: 12px; display: flex; align-items: center; font-weight: 700; font-size: 0.9rem; color: #555; box-shadow: 0 2px 0 rgba(0,0,0,0.05); }
+.legend-dot { width: 12px; height: 12px; border-radius: 50%; margin-right: 10px; display: inline-block; flex-shrink: 0; }
+
 .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255, 227, 234, 0.8); display: flex; justify-content: center; align-items: center; z-index: 9999; backdrop-filter: blur(5px); }
 .modal-window { background: white; padding: 30px; border-radius: 40px; border: 6px solid var(--panel-pink); width: auto; max-width: 90%; text-align: center; box-shadow: 0 20px 60px rgba(255, 133, 161, 0.5); animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+@keyframes popIn { from{transform: scale(0.5); opacity: 0;} to{transform: scale(1); opacity: 1;} }
 .team-grid { display: flex; justify-content: center; gap: 15px; margin-top: 30px; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 10px; }
 .team-card { background: var(--bg-main); padding: 10px; border-radius: 20px; width: 90px; display: flex; flex-direction: column; align-items: center; transition: transform 0.2s; flex-shrink: 0; }
 .team-card:hover { transform: translateY(-5px); box-shadow: 0 5px 15px rgba(255, 158, 181, 0.3); }
@@ -253,8 +253,9 @@ button, .team-icon-btn, .character-img, [role="button"] { cursor: url('/hachikaw
 .btn-close { margin-top: 20px; background: var(--panel-pink); color: white; border: none; padding: 10px 40px; border-radius: 25px; font-family: 'Fredoka'; font-weight: 800; cursor: pointer; box-shadow: 0 5px 0 var(--panel-dark-pink); }
 .btn-close:active { transform: translateY(4px); box-shadow: none; }
 
-/* RESPONSIVE */
 @media (max-width: 1024px) {
+  .pos-left    { right: 58%; top: -20px; width: 80px; }
+  .pos-right   { left: 58%; top: -25px; width: 80px; }
   .main-layout { gap: 20px; justify-content: center; }
   .sidebar-card { width: 140px; }
   .info-card { width: 200px; }
@@ -276,9 +277,7 @@ button, .team-icon-btn, .character-img, [role="button"] { cursor: url('/hachikaw
   .info-title { font-size: 0.9rem; margin-bottom: 8px; }
   .info-content p { font-size: 0.7rem; padding: 8px; line-height: 1.4; }
   .legend-item { font-size: 0.7rem; padding: 5px; }
-  .char-container, .character-footer1, .character-footer2 { display: none; }
+  .char-wrapper, .character-right, .character-footer1, .character-footer2 { display: none; }
   .grid-labels-top span { font-size: 0.8rem !important; width: var(--cell-size) !important; }
   .grid-labels-left span { font-size: 0.8rem !important; height: var(--cell-size) !important; justify-content: center; margin-right: 4px; }
-  .header-content { gap: 5px; }
-  .character-img { width: 50px; }
 }

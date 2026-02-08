@@ -14,33 +14,33 @@ const ChiikawaCharacters = () => {
   const getQuote = () => quotes[Math.floor(Math.random() * quotes.length)]
 
   return (
-    <>
-      {/* Footer 1: Usagi */}
+    <div className="footer-mascot-container">
+      {/* Character 1: Usagi */}
       <div 
-        className="char-wrapper pos-footer1" 
-        onClick={() => handleCharClick('footer1')}
+        className="char-wrapper" 
+        onClick={() => handleCharClick('char1')}
       >
-        <img src="/Usagi.svg" className="character-img" />
-        {activeBubble === 'footer1' && (
-          <div className="speech-bubble" style={{ bottom: '110%', right: '0' }}>
+        <img src="/Usagi.svg" alt="Usagi" className="character-img" />
+        {activeBubble === 'char1' && (
+          <div className="speech-bubble bubble-char">
             {getQuote()}
           </div>
         )}
       </div>
 
-      {/* Footer 2: Momonga */}
-      <div 
-        className="char-wrapper pos-footer2" 
-        onClick={() => handleCharClick('footer2')}
+      {/* Character 2: Momonga */}
+      <div
+        className="char-wrapper" 
+        onClick={() => handleCharClick('char2')}
       >
-        <img src="/Momonga.svg" className="character-img" />
-        {activeBubble === 'footer2' && (
-          <div className="speech-bubble" style={{ bottom: '110%', right: '0' }}>
+        <img src="/Momonga.svg" alt="Momonga" className="character-img" />
+        {activeBubble === 'char2' && (
+          <div className="speech-bubble bubble-char">
             {getQuote()}
           </div>
         )}
       </div>
-    </>
+    </div>
   )
 }
 
