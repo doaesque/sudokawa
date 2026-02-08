@@ -68,8 +68,6 @@ function App() {
           <ChiikawaCharacters />
         </div>
       </div>
-
-      {showTeam && <TeamModal onClose={() => setShowTeam(false)} />}
     </div>
   )
 }
