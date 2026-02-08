@@ -4,7 +4,6 @@ import '../App.css'
 const SpeedControl = ({ speed, setSpeed, onSkip, isSolving }) => {
   return (
     <div className="playlist-container">
-      {/* Tambahkan class 'disabled-state' jika isSolving false */}
       <div className={`speed-control ${!isSolving ? 'disabled-state' : ''}`}>
         <span className="speed-label">Speed</span>
         <input 
@@ -15,7 +14,6 @@ const SpeedControl = ({ speed, setSpeed, onSkip, isSolving }) => {
           onChange={(e) => setSpeed(Number(e.target.value))}
           className="speed-slider"
           disabled={!isSolving} 
-          /* PASTIKAN TIDAK ADA TITLE DI SINI */
         />
       </div>
 
@@ -23,7 +21,6 @@ const SpeedControl = ({ speed, setSpeed, onSkip, isSolving }) => {
         className={`btn-skip ${!isSolving ? 'disabled-state' : ''}`}
         onClick={onSkip} 
         disabled={!isSolving}
-        /* PASTIKAN TIDAK ADA TITLE DI SINI */
       >
         ⏭
       </button>

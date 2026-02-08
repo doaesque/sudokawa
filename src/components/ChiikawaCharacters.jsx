@@ -1,7 +1,10 @@
 import React, { useState } from 'react'
 import '../App.css'
 
-const quotes = ["Usagi!", "Hah??", "Yaha!", "Urra!", "Momon...", "Cute!", "Purr...", "Lari!"]
+const quotes = {
+  usagi: ["Urra!", "Haa?", "Yaha!", "Waaa!", "Puleya!", "Eeeh?"],
+  momonga: ["Cute!", "Puji Aku!", "Momon...", "Sini!", "Lari!", "Lihat!"]
+}
 
 const ChiikawaCharacters = () => {
   const [activeBubble, setActiveBubble] = useState(null)
@@ -11,19 +14,20 @@ const ChiikawaCharacters = () => {
     setTimeout(() => setActiveBubble(null), 2000)
   }
 
-  const getQuote = () => quotes[Math.floor(Math.random() * quotes.length)]
+  const getQuote = (char) => quotes[char][Math.floor(Math.random() * quotes[char].length)]
 
   return (
     <div className="footer-mascot-container">
       {/* Character 1: Usagi */}
       <div 
         className="char-wrapper" 
-        onClick={() => handleCharClick('char1')}
+        onClick={() => handleCharClick('usagi')}
+        style={{ cursor: 'pointer', pointerEvents: 'auto' }}
       >
         <img src="/Usagi.svg" alt="Usagi" className="character-img" />
-        {activeBubble === 'char1' && (
+        {activeBubble === 'usagi' && (
           <div className="speech-bubble bubble-char">
-            {getQuote()}
+            {getQuote('usagi')}
           </div>
         )}
       </div>
@@ -31,12 +35,13 @@ const ChiikawaCharacters = () => {
       {/* Character 2: Momonga */}
       <div
         className="char-wrapper" 
-        onClick={() => handleCharClick('char2')}
+        onClick={() => handleCharClick('momonga')}
+        style={{ cursor: 'pointer', pointerEvents: 'auto' }}
       >
         <img src="/Momonga.svg" alt="Momonga" className="character-img" />
-        {activeBubble === 'char2' && (
+        {activeBubble === 'momonga' && (
           <div className="speech-bubble bubble-char">
-            {getQuote()}
+            {getQuote('momonga')}
           </div>
         )}
       </div>
