@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import './App.css'
 import Sidebar from './components/Sidebar'
 import SudokuGrid from './components/SudokuGrid'
@@ -6,10 +6,19 @@ import TeamModal from './components/TeamModal'
 import InfoPanel from './components/InfoPanel'
 import Header from './components/Header'
 import ChiikawaCharacters from './components/ChiikawaCharacters'
+import ThemeSelector from './components/ThemeSelector' // Import Selector
 import { useSudokuGame } from './hooks/useSudokuGame'
 
 function App() {
   const [showTeam, setShowTeam] = useState(false)
+  
+  // State Tema (Default: Chiikawa)
+  const [theme, setTheme] = useState('chiikawa')
+
+  // Effect untuk ganti atribut data-theme di body HTML saat tema berubah
+  useEffect(() => {
+    document.body.setAttribute('data-theme', theme)
+  }, [theme])
 
   const {
     board, cellStatus, candidates, panelMsg, isSolving, speed, isHintActive,
@@ -19,6 +28,9 @@ function App() {
 
   return (
     <div className="sudoku-container">
+      {/* Dropdown Tema di Pojok Kiri */}
+      <ThemeSelector currentTheme={theme} setTheme={setTheme} />
+
       {/* Header dengan tombol Meet Team */}
       <Header onShowTeam={() => setShowTeam(true)} />
 
