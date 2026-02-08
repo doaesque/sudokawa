@@ -1,52 +1,15 @@
 :root {
-  --current-bg: var(--bg-main, #fff5f8);
-  --current-text: var(--text-pink, #c94c6a);
-  --current-accent: var(--panel-dark-pink, #ff85a1);
-  --current-border: var(--panel-pink, #ffb8c9);
-
-  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  font-family: 'Fredoka', 'Segoe UI', Roboto, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
-  color: var(--current-text);
-  background-color: var(--current-bg);
+  color: var(--text-pink);
+  background-color: var(--bg-main);
 
-  font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
-h1 {
-  font-size: 3em;
-  line-height: 1.1;
-  color: var(--current-accent);
-  filter: drop-shadow(2px 2px 0px white);
-}
-
-button {
-  -webkit-appearance: none;
-  appearance: none;
-  border-radius: 12px;
-  border: 2px solid var(--current-border);
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 600;
-  font-family: inherit;
-  background-color: white;
-  color: var(--current-accent);
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-button:hover {
-  background-color: var(--current-bg);
-  border-color: var(--current-accent);
-  transform: translateY(-3px);
-  box-shadow: 0 4px 12px var(--modal-shadow);
-}
-
-/* Sisanya biarkan default */
 body {
   margin: 0;
   display: flex;
@@ -54,4 +17,36 @@ body {
   justify-content: center;
   min-width: 320px;
   min-height: 100vh;
+  background-color: var(--bg-main);
+  transition: background-color 0.3s ease;
+}
+
+h1 {
+  font-size: 3em;
+  line-height: 1.1;
+  color: var(--panel-dark-pink);
+  filter: drop-shadow(2px 2px 0px white);
+  margin-bottom: 20px;
+}
+
+button {
+  -webkit-appearance: none;
+  appearance: none;
+  border-radius: 12px;
+  border: 2px solid var(--panel-pink);
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 600;
+  font-family: inherit;
+  background-color: white;
+  color: var(--panel-dark-pink);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+button:hover {
+  background-color: var(--bg-main);
+  border-color: var(--panel-dark-pink);
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px var(--modal-shadow);
 }
