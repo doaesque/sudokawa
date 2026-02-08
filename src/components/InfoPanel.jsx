@@ -4,11 +4,11 @@ import '../App.css'
 const InfoPanel = ({ message }) => {
   return (
     <div className="info-card">
-      <div className="features-title info-title">Info & Analisis</div>
+      <div className="features-title info-title">Notes</div>
       <div className="info-content">
         <p>{message}</p>
       </div>
-
+      
       <div className="legend-box">
         <div className="legend-item">
           <span className="legend-dot" style={{background:'#444'}}></span> Fixed (Soal)
