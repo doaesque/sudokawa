@@ -4,18 +4,15 @@ import Sidebar from './components/Sidebar'
 import SudokuGrid from './components/SudokuGrid'
 import TeamModal from './components/TeamModal'
 import InfoPanel from './components/InfoPanel'
-import Header from './components/Header'
+import Header from './components/Header' // Import Header yang baru dibuat
 import ChiikawaCharacters from './components/ChiikawaCharacters'
-import ThemeSelector from './components/ThemeSelector' // Import Selector
+import ThemeSelector from './components/ThemeSelector'
 import { useSudokuGame } from './hooks/useSudokuGame'
 
 function App() {
   const [showTeam, setShowTeam] = useState(false)
-  
-  // State Tema (Default: Chiikawa)
   const [theme, setTheme] = useState('chiikawa')
 
-  // Effect untuk ganti atribut data-theme di body HTML saat tema berubah
   useEffect(() => {
     document.body.setAttribute('data-theme', theme)
   }, [theme])
@@ -28,14 +25,12 @@ function App() {
 
   return (
     <div className="sudoku-container">
-      {/* Dropdown Tema di Pojok Kiri */}
       <ThemeSelector currentTheme={theme} setTheme={setTheme} />
 
-      {/* Header dengan tombol Meet Team */}
+      {/* Header Modular: Logic maskot & judul ada di dalamnya */}
       <Header onShowTeam={() => setShowTeam(true)} />
 
       <div className="main-layout">
-        {/* KIRI: Tombol Kontrol */}
         <div className="sidebar-wrapper">
           <Sidebar
             onSolve={handleSolve}
@@ -49,7 +44,6 @@ function App() {
           />
         </div>
 
-        {/* TENGAH: Grid Sudoku */}
         <SudokuGrid
           board={board}
           cellStatus={cellStatus}
@@ -62,12 +56,13 @@ function App() {
           onSkip={handleSkip}
         />
 
-        {/* KANAN: Notes + Mascot */}
         <div className="info-column-wrapper">
           <InfoPanel message={panelMsg} />
           <ChiikawaCharacters />
         </div>
       </div>
+
+      {showTeam && <TeamModal onClose={() => setShowTeam(false)} />}
     </div>
   )
 }

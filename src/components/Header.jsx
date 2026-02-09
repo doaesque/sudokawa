@@ -1,41 +1,31 @@
-import React, { useState } from 'react'
-import '../App.css'
-import TeamModal from './TeamModal'
+import React from 'react'
 
-const Header = () => {
-  // State modal team
-  const [showTeamModal, setShowTeamModal] = useState(false)
-
+const Header = ({ onShowTeam }) => {
   return (
-    <div className="header">
-      {/* Karakter Kiri (Statis) */}
+    <header className="header">
+      {/* Mascot Kiri: Chiikawa */}
       <div className="char-wrapper pos-left">
-        <img src="/Chiikawa.svg" className="character-img" alt="Chiikawa" />
+        <img src="/Chiikawa.svg" alt="Chiikawa" className="character-img" />
       </div>
 
+      {/* Judul */}
       <h1 className="title">SUDOKAWA</h1>
-      
-      {/* Tombol Team (Klik) */}
+
+      {/* Tombol Team */}
       <button 
         className="team-icon-btn" 
-        onClick={() => setShowTeamModal(true)}
-        data-tooltip="Meet the Team!"
+        onClick={onShowTeam}
+        title="Meet the Team"
       >
-        <img 
-          src="/chiikawaa.svg" 
-          className="character-button" 
-          style={{ width: '130px' }} 
-          alt="Team button icon" 
-        />
+        {/* Pastikan file ini ada di public folder, atau ganti dengan SVG/Icon */}
+        <img src="/chiikawaa.svg" alt="Team" className="character-button" />
       </button>
 
-      {/* Karakter Kanan (Statis) */}
+      {/* Mascot Kanan: Hachikaware */}
       <div className="char-wrapper pos-right">
-        <img src="/Hachikaware.svg" className="character-img" alt="Hachikaware" />
+        <img src="/Hachikaware.svg" alt="Hachikaware" className="character-img" />
       </div>
-
-      {showTeamModal && <TeamModal onClose={() => setShowTeamModal(false)} />}
-    </div>
+    </header>
   )
 }
 
