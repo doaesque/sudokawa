@@ -199,6 +199,14 @@ export const useSudokuGame = () => {
 
     if (solved) {
         setSolutionKey(boardToSolve) 
+        
+        // --- FIX: Remove unused 'r' and 'c' parameters ---
+        setBoard(boardToSolve)
+        setCellStatus(prev => prev.map(row => 
+          row.map(status => status === 'fixed' ? 'fixed' : 'trial')
+        ))
+        // --------------------------------------------------------
+
         setPanelMsg(
 `🎉 SELESAI!
 • Sel Kosong: ${emptyCellsCount}
