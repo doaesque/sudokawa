@@ -328,14 +328,17 @@ button, .team-icon-btn, [role="button"] {
   background-color: var(--btn-hover);
 }
 
+/* Style tombol disabled (saat solving) - DIBUAT TRANSPARAN */
 .btn-blob:disabled {
   background-color: #e0e0e0;
   color: #aaa;
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
+  opacity: 0.5; /* Transparan agar seragam dengan checkbox */
 }
 
+/* Style Tooltip (Seragam untuk semua) */
 [data-tooltip]:hover::after {
   content: attr(data-tooltip);
   position: absolute;
@@ -351,6 +354,10 @@ button, .team-icon-btn, [role="button"] {
   box-shadow: 0 5px 15px var(--modal-shadow);
   z-index: 9999;
   pointer-events: none;
+  
+  /* Gaya teks seragam dan bersih */
+  font-weight: 700;
+  text-shadow: none; 
 }
 
 /* --- CUSTOM CHECKBOX STYLE (White & Compact) --- */
@@ -374,8 +381,8 @@ button, .team-icon-btn, [role="button"] {
   color: #ffffff !important;
   user-select: none;
   transition: opacity 0.2s;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.2);
   position: relative;
+  /* Text shadow dihapus agar bersih */
 }
 
 .custom-checkbox-label input[type="checkbox"] {
@@ -1248,12 +1255,4 @@ button, .team-icon-btn, [role="button"] {
   .team-card { width: 80px; margin: 0; padding: 10px; }
   .avatar-placeholder { width: 40px; height: 40px; font-size: 1.4rem; }
   .member-name { font-size: 0.7rem; }
-}
-
-@media (max-width: 400px) {
-  .title { font-size: 2rem; }
-  .btn-blob { font-size: 0.7rem; padding: 8px 4px; }
-  .grid-board { transform: none !important; }
-  .grid-card { padding: 10px 5px !important; }
-  .sidebar-wrapper, .info-column-wrapper { flex: 0 0 48%; }
 }
