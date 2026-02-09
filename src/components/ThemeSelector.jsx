@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 
 const themes = [
-  { id: 'chiikawa', label: '🌸 Chiikawa' },
-  { id: 'hachikaware', label: '❄️ Hachikaware' },
-  { id: 'usagi', label: '🌻 Usagi' },
-  { id: 'momonga', label: '🪻 Momonga' },
+  { id: 'chiikawa', emoji: '🌸', name: 'Chiikawa' },
+  { id: 'hachikaware', emoji: '❄️', name: 'Hachikaware' },
+  { id: 'usagi', emoji: '🌻', name: 'Usagi' },
+  { id: 'momonga', emoji: '🪻', name: 'Momonga' },
 ]
 
 const ThemeSelector = ({ currentTheme, setTheme }) => {
@@ -15,81 +15,33 @@ const ThemeSelector = ({ currentTheme, setTheme }) => {
     setIsOpen(false)
   }
 
-  const activeLabel = themes.find(t => t.id === currentTheme)?.label || 'Tema'
+  const active = themes.find(t => t.id === currentTheme) || themes[0]
 
   return (
-    <div style={{
-      position: 'absolute',
-      top: '20px',
-      left: 'max(20px)',
-      zIndex: 1000
-    }}>
-      <button
+    <div className="theme-selector-wrapper">
+      <button 
+        className="theme-btn" 
         onClick={() => setIsOpen(!isOpen)}
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '8px',
-          padding: '10px 20px',
-          borderRadius: '50px',
-          border: `3px solid var(--panel-dark-pink)`,
-          background: 'white',
-          color: 'var(--panel-dark-pink)',
-          fontFamily: 'Fredoka, sans-serif',
-          fontWeight: '700',
-          fontSize: '0.9rem',
-          cursor: 'pointer',
-          boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
-          transition: 'all 0.2s',
-          minWidth: '160px',
-          justifyContent: 'space-between'
-        }}
-        onMouseEnter={(e) => e.target.style.transform = 'scale(1.05)'}
-        onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}
+        title="Ganti Tema"
       >
-        {activeLabel}
-        <span>▼</span>
+        {/* Bungkus konten agar bisa diatur layout-nya */}
+        <div className="theme-btn-content">
+          <span className="theme-emoji">{active.emoji}</span>
+          <span className="theme-text">{active.name}</span>
+        </div>
+        <span className="theme-arrow">▼</span>
       </button>
 
       {isOpen && (
-        <ul style={{
-          position: 'absolute',
-          top: '120%',
-          left: 0,
-          width: '100%',
-          background: 'white',
-          borderRadius: '20px',
-          border: `3px solid var(--panel-dark-pink)`,
-          listStyle: 'none',
-          padding: '5px',
-          margin: 0,
-          boxShadow: '0 5px 15px rgba(0,0,0,0.1)',
-          overflow: 'hidden',
-          animation: 'fadeIn 0.2s ease'
-        }}>
-          {themes.map((theme) => (
+        <ul className="theme-dropdown">
+          {themes.map((t) => (
             <li
-              key={theme.id}
-              onClick={() => handleSelect(theme.id)}
-              style={{
-                padding: '10px 15px',
-                color: currentTheme === theme.id ? 'white' : 'var(--panel-dark-pink)',
-                background: currentTheme === theme.id ? 'var(--panel-dark-pink)' : 'transparent',
-                borderRadius: '12px',
-                cursor: 'pointer',
-                fontWeight: '600',
-                fontSize: '0.85rem',
-                transition: 'background 0.2s',
-                marginBottom: '2px'
-              }}
-              onMouseEnter={(e) => {
-                if (currentTheme !== theme.id) e.target.style.background = 'var(--bg-main)'
-              }}
-              onMouseLeave={(e) => {
-                if (currentTheme !== theme.id) e.target.style.background = 'transparent'
-              }}
+              key={t.id}
+              onClick={() => handleSelect(t.id)}
+              className={`theme-item ${currentTheme === t.id ? 'active' : ''}`}
             >
-              {theme.label}
+              <span className="theme-emoji">{t.emoji}</span>
+              <span className="theme-text">{t.name}</span>
             </li>
           ))}
         </ul>
