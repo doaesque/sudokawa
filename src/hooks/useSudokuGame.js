@@ -135,10 +135,29 @@ export const useSudokuGame = () => {
             return;
         }
 
+        for (let row = 0; row < 9; row++) {
+            for (let col = 0; col < 9; col++) {
+                const val = board[row][col];
+                if (val !== 0 && cellStatus[row][col] !== "fixed") {
+                    const tempBoard = board.map((br) => [...br]);
+                    tempBoard[row][col] = 0;
+                    if (!isValid(tempBoard, row, col, val)) {
+                        setPanelMsg(
+                            `⚠️ Tabrakan di baris ${row + 1} kolom ${col + 1}, perbaiki dulu!`,
+                        );
+                        return;
+                    }
+                }
+            }
+        }
+
         let currentSolution = solutionKey;
         if (!currentSolution) {
             setPanelMsg("🔍 Mencari solusi...");
-            const solved = getSolvedBoard(board);
+
+            const sourceBoard = initialBoard || board;
+            const solved = getSolvedBoard(sourceBoard);
+
             if (!solved) {
                 setPanelMsg("⚠️ Papan ini tidak memiliki solusi valid!");
                 return;
@@ -259,7 +278,6 @@ export const useSudokuGame = () => {
     const handleCheck = () => {
         if (isSolving) return;
 
-        // 1. Validasi tabrakan angka dulu (Cegah Hang)
         let directErrors = 0;
         const newStatus = cellStatus.map((row) => [...row]);
 
@@ -279,17 +297,18 @@ export const useSudokuGame = () => {
 
         if (directErrors > 0) {
             setCellStatus(newStatus);
-            setPanelMsg(`⚠️ Ada ${directErrors} tabrakan angka!`);
+            setPanelMsg(
+                `⚠️ Ada ${directErrors} tabrakan angka! Perbaiki dulu.`,
+            );
             return;
         }
 
-        // 2. Validasi solusi
         let currentSolution = solutionKey;
         if (!currentSolution) {
             setPanelMsg("🔍 Memvalidasi...");
-            // Gunakan initialBoard agar solver bekerja dari kondisi awal yang bersih
             const sourceBoard = initialBoard || board;
             const solved = getSolvedBoard(sourceBoard);
+
             if (!solved) {
                 setPanelMsg("⚠️ Papan ini tidak memiliki solusi valid!");
                 return;
@@ -314,7 +333,7 @@ export const useSudokuGame = () => {
         setCellStatus(newStatus);
         setPanelMsg(
             logicErrors > 0
-                ? `⚠️ Ada ${logicErrors} angka salah posisi!`
+                ? `⚠️ Ada ${logicErrors} angka yang salah posisi!`
                 : "✅ Aman terkendali!",
         );
     };

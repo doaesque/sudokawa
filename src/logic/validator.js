@@ -1,4 +1,6 @@
-export const isValid = (board, row, col, num) => {
+git add .
+git commit -m "fix: prevent freeze on solve cell and check by validating constraints first"
+git push origin mainexport const isValid = (board, row, col, num) => {
   for (let i = 0; i < 9; i++) {
     // Cek Baris
     if (board[row][i] === num) return false
