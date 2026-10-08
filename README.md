@@ -1,29 +1,53 @@
-# 🌸 Sudokawa: Sudoku Solver & Game
+# 🌸 Sudokawa — Recursive Backtracking Visualizer
 
-Game Sudoku interaktif berbasis **React + Vite** yang dilengkapi dengan visualisasi algoritma *Backtracking*.
+[![React](https://img.shields.io/badge/React-18+-61DAFB?style=flat-square&logo=react&logoColor=black)](https://react.dev/)
+[![Vite](https://img.shields.io/badge/Vite-Fast_Build-646CFF?style=flat-square&logo=vite&logoColor=white)](https://vitejs.dev/)
+[![Algorithm](https://img.shields.io/badge/Algorithm-Backtracking_(DFS)-FF69B4?style=flat-square)](https://en.wikipedia.org/wiki/Backtracking)
+[![License: GPL-3.0](https://img.shields.io/badge/License-GPL--3.0-blue.svg?style=flat-square)](LICENSE)
 
-## ✨ Fitur Utama
+An interactive, educational puzzle application designed to visualize how recursive search trees solve constraint satisfaction problems in real time.
 
-- **3 Tingkat Kesulitan:** Easy, Medium, dan Hard.
-- **Visualisasi AI Solver:** Lihat bagaimana algoritma *Backtracking* bekerja secara real-time.
-- **Fitur Bantuan:** Hint (Pencil Marks), Solve Cell, dan Validasi Error (Check).
-- **Kontrol Kecepatan:** Atur kecepatan animasi solver dari kura-kura hingga kelinci.
-- **Desain Modern:** UI bertema pastel yang responsif dan clean.
+Built as the capstone submission for **Algorithm Design and Analysis** (*Tugas Besar Analisis & Strategi Algoritma*), Universitas Komputer Indonesia (UNIKOM).
 
-## 🛠️ Tech Stack
+---
 
-- **Core:** React.js, Vite
-- **Logic:** Custom Hooks, Recursive Backtracking Algorithm
-- **Styling:** CSS3 (Grid & Flexbox)
+## ⚡ Technical Core
 
-## 🚀 Jalankan Lokal
+Sudokawa translates abstract tree-search recursion into a responsive, frame-by-frame visual playback without locking the browser's JavaScript single-threaded event loop:
 
-1. `git clone https://github.com/username/sudokawa.git`
-2. `npm install`
-3. `npm run dev`
+* **Non-Blocking Recursive Stepping:** Decouples raw Depth-First Search (DFS) execution from DOM updates using controllable asynchronous pacing (`async/await` step intervals).
+* **Constraint Validation Engine:** Computes row, column, and $3 \times 3$ subgrid invariants with deterministic lookups before recursing deeper into the search tree.
+* **Granular Speed Throttling:** Configurable execution delays ranging from step-by-step inspection to high-speed batch solving.
+* **Manual Gameplay & Helper Utilities:** Includes difficulty generation (Easy, Medium, Hard), pencil marks, cell solving, and error validation checks.
 
-## 👥 Tim Penyusun
+---
 
-Salmah, Haliza, Hanna, Serena, & Salsa.
+## 🛠️ Stack
 
-*Dibuat untuk tugas besar Analisis dan Strategi Algoritma.*
+* **Runtime & Framework:** React.js, Vite
+* **Core Logic:** Custom State Hooks, Recursive Backtracking Algorithm
+* **Styling:** CSS3 (Flexbox & Grid) with theme tokens
+
+---
+
+## 🚀 Quickstart
+
+```bash
+git clone [https://github.com/doaesque/sudokawa.git](https://github.com/doaesque/sudokawa.git)
+cd sudokawa
+npm install
+npm run dev
+
+```
+
+---
+
+## 👥 Engineering Team
+
+Developed for the **Algorithm Design & Analysis** course project by:
+
+* Salmah
+* Haliza
+* Hanna
+* Serena
+* Salsabila
