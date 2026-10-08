@@ -33,7 +33,7 @@ Sudokawa translates abstract tree-search recursion into a responsive, frame-by-f
 ## 🚀 Quickstart
 
 ```bash
-git clone [https://github.com/doaesque/sudokawa.git](https://github.com/doaesque/sudokawa.git)
+git clone https://github.com/doaesque/sudokawa.git
 cd sudokawa
 npm install
 npm run dev
